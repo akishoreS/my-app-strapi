@@ -1,0 +1,153 @@
+{
+  "kind": "collectionType",
+  "collectionName": "listings",
+  "info": {
+    "singularName": "listing",
+    "pluralName": "listings",
+    "displayName": "Listing",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "your_name": {
+      "type": "string"
+    },
+    "company_name": {
+      "type": "string",
+      "required": true
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "phone_number": {
+      "type": "string"
+    },
+    "City": {
+      "type": "string"
+    },
+    "Address": {
+      "type": "string"
+    },
+    "property_photos": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "property_overview": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "site_total_area": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "site_blueprint_photo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "investment_thesis": {
+      "type": "blocks"
+    },
+    "investment_deck": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "financial_plan": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "total_amount": {
+      "type": "decimal"
+    },
+    "amount_breakdown": {
+      "type": "blocks"
+    },
+    "investment_memo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "financial_calculator": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "details_of_previous_work": {
+      "type": "blocks",
+      "required": false
+    },
+    "site_details": {
+      "type": "blocks",
+      "required": true
+    },
+    "current_funding_details": {
+      "type": "blocks"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "Under Review",
+        "Listed"
+      ]
+    },
+    "ratings_and_reviews": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::ratings-and-review.ratings-and-review",
+      "mappedBy": "listing"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "admin_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "admin::user"
+    }
+  }
+}

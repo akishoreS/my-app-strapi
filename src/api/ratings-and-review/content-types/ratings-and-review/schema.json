@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ratings_and_reviews",
+  "info": {
+    "singularName": "ratings-and-review",
+    "pluralName": "ratings-and-reviews",
+    "displayName": "Ratings_and_review"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "listing": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::listing.listing",
+      "inversedBy": "ratings_and_reviews"
+    },
+    "rating": {
+      "type": "integer"
+    },
+    "review_text": {
+      "type": "blocks"
+    }
+  }
+}
