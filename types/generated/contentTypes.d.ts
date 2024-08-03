@@ -416,38 +416,6 @@ export interface ApiListingListing extends Schema.CollectionType {
   };
 }
 
-export interface ApiRatingsAndReviewRatingsAndReview
-  extends Schema.CollectionType {
-  collectionName: 'ratings_and_reviews';
-  info: {
-    singularName: 'ratings-and-review';
-    pluralName: 'ratings-and-reviews';
-    displayName: 'Ratings_and_review';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    rating: Attribute.Integer;
-    review_text: Attribute.Blocks;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::ratings-and-review.ratings-and-review',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::ratings-and-review.ratings-and-review',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -881,7 +849,6 @@ declare module '@strapi/types' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'api::listing.listing': ApiListingListing;
-      'api::ratings-and-review.ratings-and-review': ApiRatingsAndReviewRatingsAndReview;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
