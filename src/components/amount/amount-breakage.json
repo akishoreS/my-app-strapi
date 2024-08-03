@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_amount_amount_breakages",
+  "info": {
+    "displayName": "amount_breakage",
+    "icon": "layer"
+  },
+  "options": {},
+  "attributes": {
+    "expense_type": {
+      "type": "string",
+      "maxLength": 15
+    },
+    "cost": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}
