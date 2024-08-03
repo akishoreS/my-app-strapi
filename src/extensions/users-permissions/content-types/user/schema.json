@@ -83,6 +83,18 @@
     "last_name": {
       "type": "string",
       "required": true
+    },
+    "mobile_no": {
+      "type": "string",
+      "required": false,
+      "unique": true,
+      "regex": "^\\d{10}$"
+    },
+    "otps": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::otp.otp",
+      "mappedBy": "user_id"
     }
   }
 }
