@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_admin_use_for_admin_use_onlies",
+  "info": {
+    "displayName": "for_admin_use_only",
+    "icon": "lock",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "property_review": {
+      "displayName": "property_review",
+      "type": "component",
+      "repeatable": true,
+      "component": "propery-review.property-review"
+    },
+    "user_review": {
+      "displayName": "user_review",
+      "type": "component",
+      "repeatable": true,
+      "component": "user-review.user-review"
+    },
+    "status": {
+      "type": "boolean"
+    },
+    "totally_funded": {
+      "type": "boolean"
+    },
+    "target_irr": {
+      "type": "decimal",
+      "max": 100,
+      "required": false
+    },
+    "yield": {
+      "type": "decimal",
+      "max": 100
+    },
+    "asset_value": {
+      "type": "decimal"
+    },
+    "funded_value": {
+      "type": "decimal"
+    }
+  }
+}

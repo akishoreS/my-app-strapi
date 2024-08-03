@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_property_property_details",
+  "info": {
+    "displayName": "property_details",
+    "icon": "pinMap",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "property_photos": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "property_overview": {
+      "type": "text",
+      "maxLength": 200
+    },
+    "Location": {
+      "displayName": "Location",
+      "type": "component",
+      "repeatable": false,
+      "component": "property.location"
+    }
+  }
+}

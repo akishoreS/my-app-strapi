@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_investment_investment_details",
+  "info": {
+    "displayName": "Investment_details",
+    "icon": "stack",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "current_funding_details": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "investment_deck": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "financial_plan": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "investment_thesis": {
+      "displayName": "investment_thesis",
+      "type": "component",
+      "repeatable": true,
+      "component": "investment.investment-thesis"
+    }
+  }
+}
