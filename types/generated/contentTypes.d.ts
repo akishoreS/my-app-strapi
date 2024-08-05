@@ -362,92 +362,6 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
-export interface ApiListingListing extends Schema.CollectionType {
-  collectionName: 'listings';
-  info: {
-    singularName: 'listing';
-    pluralName: 'listings';
-    displayName: 'Listing';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    listed_by: Attribute.Relation<
-      'api::listing.listing',
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-    reviwed_by: Attribute.Relation<
-      'api::listing.listing',
-      'oneToOne',
-      'admin::user'
-    >;
-    site_details: Attribute.Component<'site-info.site-details'>;
-    user_details: Attribute.Component<'user-info.user-details'> &
-      Attribute.Required;
-    Resources: Attribute.Component<'resources.resources'> & Attribute.Private;
-    legal_assistance: Attribute.Boolean & Attribute.DefaultTo<false>;
-    investment_details: Attribute.Component<'investment.investment-details'>;
-    amount_breakdown: Attribute.Component<'amount.amount'>;
-    Location: Attribute.Component<'property.property-details'>;
-    Admin_inputs: Attribute.Component<'admin-use.for-admin-use-only'>;
-    saved_by: Attribute.Relation<
-      'api::listing.listing',
-      'manyToMany',
-      'plugin::users-permissions.user'
-    >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::listing.listing',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::listing.listing',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiRatingsAndReviewRatingsAndReview
-  extends Schema.CollectionType {
-  collectionName: 'ratings_and_reviews';
-  info: {
-    singularName: 'ratings-and-review';
-    pluralName: 'ratings-and-reviews';
-    displayName: 'Ratings_and_review';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    rating: Attribute.Integer;
-    review_text: Attribute.Blocks;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::ratings-and-review.ratings-and-review',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::ratings-and-review.ratings-and-review',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -847,11 +761,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     profile_picture: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     first_name: Attribute.String & Attribute.Required;
     last_name: Attribute.String & Attribute.Required;
-    phone_number: Attribute.String;
-    saved_properties: Attribute.Relation<
+    mobile_no: Attribute.String & Attribute.Unique;
+    otps: Attribute.Relation<
       'plugin::users-permissions.user',
-      'manyToMany',
-      'api::listing.listing'
+      'oneToMany',
+      'api::otp.otp'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -920,57 +834,29 @@ export interface ApiListingListing extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    your_name: Attribute.String;
-    company_name: Attribute.String & Attribute.Required;
-    logo: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    phone_number: Attribute.String;
-    City: Attribute.String;
-    Address: Attribute.String;
-    property_photos: Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
-    property_overview: Attribute.String &
-      Attribute.Required &
-      Attribute.SetMinMaxLength<{
-        maxLength: 200;
-      }>;
-    site_total_area: Attribute.Integer &
-      Attribute.Required &
-      Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
-    site_blueprint_photo: Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios'
-    >;
-    investment_thesis: Attribute.Blocks;
-    investment_deck: Attribute.Media<'files'>;
-    financial_plan: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    total_amount: Attribute.Decimal;
-    amount_breakdown: Attribute.Blocks;
-    investment_memo: Attribute.Media<'files'>;
-    financial_calculator: Attribute.Media<'files'>;
-    details_of_previous_work: Attribute.Blocks;
-    site_details: Attribute.Blocks & Attribute.Required;
-    current_funding_details: Attribute.Blocks;
-    status: Attribute.Enumeration<['Under Review', 'Listed']>;
-    ratings_and_reviews: Attribute.Relation<
-      'api::listing.listing',
-      'oneToMany',
-      'api::ratings-and-review.ratings-and-review'
-    >;
-    user: Attribute.Relation<
+    listed_by: Attribute.Relation<
       'api::listing.listing',
       'oneToOne',
       'plugin::users-permissions.user'
     >;
-    admin_user: Attribute.Relation<
+    reviwed_by: Attribute.Relation<
       'api::listing.listing',
       'oneToOne',
       'admin::user'
+    >;
+    site_details: Attribute.Component<'site-info.site-details'>;
+    user_details: Attribute.Component<'user-info.user-details'> &
+      Attribute.Required;
+    Resources: Attribute.Component<'resources.resources'> & Attribute.Private;
+    legal_assistance: Attribute.Boolean & Attribute.DefaultTo<false>;
+    investment_details: Attribute.Component<'investment.investment-details'>;
+    amount_breakdown: Attribute.Component<'amount.amount'>;
+    Location: Attribute.Component<'property.property-details'>;
+    Admin_inputs: Attribute.Component<'admin-use.for-admin-use-only'>;
+    saved_by: Attribute.Relation<
+      'api::listing.listing',
+      'manyToMany',
+      'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -983,44 +869,6 @@ export interface ApiListingListing extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::listing.listing',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiOpportunityOpportunity extends Schema.CollectionType {
-  collectionName: 'opportunities';
-  info: {
-    singularName: 'opportunity';
-    pluralName: 'opportunities';
-    displayName: 'opportunity';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    title: Attribute.String;
-    description: Attribute.Blocks;
-    location: Attribute.String;
-    price: Attribute.Decimal & Attribute.Required;
-    images: Attribute.Media<'images' | 'files' | 'videos' | 'audios', true>;
-    status: Attribute.Enumeration<['active', 'inactive']>;
-    investment_details: Attribute.Blocks;
-    site_details: Attribute.Blocks;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::opportunity.opportunity',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::opportunity.opportunity',
       'oneToOne',
       'admin::user'
     > &
@@ -1067,11 +915,6 @@ export interface ApiRatingsAndReviewRatingsAndReview
     draftAndPublish: true;
   };
   attributes: {
-    listing: Attribute.Relation<
-      'api::ratings-and-review.ratings-and-review',
-      'manyToOne',
-      'api::listing.listing'
-    >;
     rating: Attribute.Integer;
     review_text: Attribute.Blocks;
     createdAt: Attribute.DateTime;
@@ -1102,8 +945,6 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
-      'api::listing.listing': ApiListingListing;
-      'api::ratings-and-review.ratings-and-review': ApiRatingsAndReviewRatingsAndReview;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
@@ -1114,7 +955,6 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::firebase-auth.firebase-auth-configuration': PluginFirebaseAuthFirebaseAuthConfiguration;
       'api::listing.listing': ApiListingListing;
-      'api::opportunity.opportunity': ApiOpportunityOpportunity;
       'api::otp.otp': ApiOtpOtp;
       'api::ratings-and-review.ratings-and-review': ApiRatingsAndReviewRatingsAndReview;
     }
