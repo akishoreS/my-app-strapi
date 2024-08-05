@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_user_review_user_reviews",
+  "info": {
+    "displayName": "user_review",
+    "icon": "file"
+  },
+  "options": {},
+  "attributes": {
+    "rating": {
+      "type": "integer",
+      "max": 5,
+      "min": 1
+    },
+    "review": {
+      "type": "blocks"
+    },
+    "admin_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "admin::user"
+    }
+  }
+}

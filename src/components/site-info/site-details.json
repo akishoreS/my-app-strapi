@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_site_info_site_details",
+  "info": {
+    "displayName": "site_details",
+    "icon": "pin"
+  },
+  "options": {},
+  "attributes": {
+    "site_description": {
+      "type": "text",
+      "maxLength": 200
+    },
+    "site_total_area": {
+      "type": "decimal",
+      "default": 0
+    },
+    "site_blueprint": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

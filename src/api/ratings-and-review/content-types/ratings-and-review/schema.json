@@ -11,12 +11,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "listing": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::listing.listing",
-      "inversedBy": "ratings_and_reviews"
-    },
     "rating": {
       "type": "integer"
     },

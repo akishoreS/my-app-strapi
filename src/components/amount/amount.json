@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_amount_amounts",
+  "info": {
+    "displayName": "amount",
+    "icon": "database"
+  },
+  "options": {},
+  "attributes": {
+    "total_amount": {
+      "type": "integer",
+      "default": 0,
+      "required": true
+    },
+    "amount_breakdown": {
+      "displayName": "amount_breakage",
+      "type": "component",
+      "repeatable": true,
+      "component": "amount.amount-breakage"
+    }
+  }
+}

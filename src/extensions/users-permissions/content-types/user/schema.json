@@ -12,13 +12,6 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "username": {
-      "type": "string",
-      "minLength": 3,
-      "unique": true,
-      "configurable": false,
-      "required": true
-    },
     "email": {
       "type": "email",
       "minLength": 6,
@@ -28,19 +21,6 @@
     "provider": {
       "type": "string",
       "configurable": false
-    },
-    "password": {
-      "type": "password",
-      "minLength": 6,
-      "configurable": false,
-      "private": true,
-      "searchable": false
-    },
-    "resetPasswordToken": {
-      "type": "string",
-      "configurable": false,
-      "private": true,
-      "searchable": false
     },
     "confirmationToken": {
       "type": "string",

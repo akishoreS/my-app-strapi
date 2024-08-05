@@ -1,0 +1,55 @@
+{
+  "collectionName": "components_user_info_user_details",
+  "info": {
+    "displayName": "user_details",
+    "icon": "user"
+  },
+  "options": {},
+  "attributes": {
+    "user_name": {
+      "type": "string",
+      "required": true
+    },
+    "company_name": {
+      "type": "string",
+      "required": true
+    },
+    "company_logo": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": false
+    },
+    "country_code": {
+      "type": "string",
+      "required": true,
+      "default": "+91"
+    },
+    "phone_number": {
+      "type": "string",
+      "maxLength": 10,
+      "required": true
+    },
+    "user_city": {
+      "type": "string",
+      "required": true
+    },
+    "user_address": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "previous_work_details": {
+      "allowedTypes": [
+        "files",
+        "videos",
+        "images"
+      ],
+      "type": "media",
+      "multiple": true,
+      "required": true
+    }
+  }
+}

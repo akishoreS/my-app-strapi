@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_prop_review_prop_reviews",
+  "info": {
+    "displayName": "prop_rev",
+    "icon": "file"
+  },
+  "options": {},
+  "attributes": {
+    "rating": {
+      "type": "integer",
+      "required": false,
+      "max": 5,
+      "min": 1
+    },
+    "review": {
+      "type": "blocks"
+    },
+    "admin_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "admin::user"
+    }
+  }
+}

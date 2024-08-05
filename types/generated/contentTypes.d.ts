@@ -362,6 +362,92 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
+export interface ApiListingListing extends Schema.CollectionType {
+  collectionName: 'listings';
+  info: {
+    singularName: 'listing';
+    pluralName: 'listings';
+    displayName: 'Listing';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    listed_by: Attribute.Relation<
+      'api::listing.listing',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    reviwed_by: Attribute.Relation<
+      'api::listing.listing',
+      'oneToOne',
+      'admin::user'
+    >;
+    site_details: Attribute.Component<'site-info.site-details'>;
+    user_details: Attribute.Component<'user-info.user-details'> &
+      Attribute.Required;
+    Resources: Attribute.Component<'resources.resources'> & Attribute.Private;
+    legal_assistance: Attribute.Boolean & Attribute.DefaultTo<false>;
+    investment_details: Attribute.Component<'investment.investment-details'>;
+    amount_breakdown: Attribute.Component<'amount.amount'>;
+    Location: Attribute.Component<'property.property-details'>;
+    Admin_inputs: Attribute.Component<'admin-use.for-admin-use-only'>;
+    saved_by: Attribute.Relation<
+      'api::listing.listing',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::listing.listing',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::listing.listing',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiRatingsAndReviewRatingsAndReview
+  extends Schema.CollectionType {
+  collectionName: 'ratings_and_reviews';
+  info: {
+    singularName: 'ratings-and-review';
+    pluralName: 'ratings-and-reviews';
+    displayName: 'Ratings_and_review';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    rating: Attribute.Integer;
+    review_text: Attribute.Blocks;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::ratings-and-review.ratings-and-review',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::ratings-and-review.ratings-and-review',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -744,24 +830,12 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    username: Attribute.String &
-      Attribute.Required &
-      Attribute.Unique &
-      Attribute.SetMinMaxLength<{
-        minLength: 3;
-      }>;
     email: Attribute.Email &
       Attribute.Required &
       Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
     provider: Attribute.String;
-    password: Attribute.Password &
-      Attribute.Private &
-      Attribute.SetMinMaxLength<{
-        minLength: 6;
-      }>;
-    resetPasswordToken: Attribute.String & Attribute.Private;
     confirmationToken: Attribute.String & Attribute.Private;
     confirmed: Attribute.Boolean & Attribute.DefaultTo<false>;
     blocked: Attribute.Boolean & Attribute.DefaultTo<false>;
@@ -773,11 +847,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     profile_picture: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     first_name: Attribute.String & Attribute.Required;
     last_name: Attribute.String & Attribute.Required;
-    mobile_no: Attribute.String & Attribute.Unique;
-    otps: Attribute.Relation<
+    phone_number: Attribute.String;
+    saved_properties: Attribute.Relation<
       'plugin::users-permissions.user',
-      'oneToMany',
-      'api::otp.otp'
+      'manyToMany',
+      'api::listing.listing'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1028,6 +1102,8 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
+      'api::listing.listing': ApiListingListing;
+      'api::ratings-and-review.ratings-and-review': ApiRatingsAndReviewRatingsAndReview;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
