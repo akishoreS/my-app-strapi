@@ -21,12 +21,13 @@
     "dotenv": "^16.4.5",
     "google-auth-library": "^9.13.0",
     "jsonwebtoken": "^9.0.2",
+    "mysql": "^2.18.1",
     "mysql2": "^3.11.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "5.3.4",
     "strapi-provider-upload-google-cloud-storage": "^4.0.0",
-    "styled-components": "5.3.3"
+    "styled-components": "^5.3.11"
   },
   "author": {
     "name": "A Strapi developer"
