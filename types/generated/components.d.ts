@@ -24,6 +24,22 @@ export interface UserReviewUserReview extends Schema.Component {
   };
 }
 
+export interface SiteInfoSiteDetails extends Schema.Component {
+  collectionName: 'components_site_info_site_details';
+  info: {
+    displayName: 'site_details';
+    icon: 'pin';
+  };
+  attributes: {
+    site_description: Attribute.Text &
+      Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    site_total_area: Attribute.Decimal & Attribute.DefaultTo<0>;
+    site_blueprint: Attribute.Media<'images'>;
+  };
+}
+
 export interface UserInfoUserDetails extends Schema.Component {
   collectionName: 'components_user_info_user_details';
   info: {
@@ -53,22 +69,6 @@ export interface UserInfoUserDetails extends Schema.Component {
       true
     > &
       Attribute.Required;
-  };
-}
-
-export interface SiteInfoSiteDetails extends Schema.Component {
-  collectionName: 'components_site_info_site_details';
-  info: {
-    displayName: 'site_details';
-    icon: 'pin';
-  };
-  attributes: {
-    site_description: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 200;
-      }>;
-    site_total_area: Attribute.Decimal & Attribute.DefaultTo<0>;
-    site_blueprint: Attribute.Media<'images'>;
   };
 }
 
@@ -240,8 +240,8 @@ declare module '@strapi/types' {
   export module Shared {
     export interface Components {
       'user-review.user-review': UserReviewUserReview;
-      'user-info.user-details': UserInfoUserDetails;
       'site-info.site-details': SiteInfoSiteDetails;
+      'user-info.user-details': UserInfoUserDetails;
       'resources.resources': ResourcesResources;
       'propery-review.property-review': ProperyReviewPropertyReview;
       'property.property-details': PropertyPropertyDetails;
