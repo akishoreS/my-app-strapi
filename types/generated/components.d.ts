@@ -1,45 +1,5 @@
 import type { Schema, Attribute } from '@strapi/strapi';
 
-export interface UserReviewUserReview extends Schema.Component {
-  collectionName: 'components_user_review_user_reviews';
-  info: {
-    displayName: 'user_review';
-    icon: 'file';
-  };
-  attributes: {
-    rating: Attribute.Integer &
-      Attribute.SetMinMax<
-        {
-          min: 1;
-          max: 5;
-        },
-        number
-      >;
-    review: Attribute.Blocks;
-    admin_user: Attribute.Relation<
-      'user-review.user-review',
-      'oneToOne',
-      'admin::user'
-    >;
-  };
-}
-
-export interface SiteInfoSiteDetails extends Schema.Component {
-  collectionName: 'components_site_info_site_details';
-  info: {
-    displayName: 'site_details';
-    icon: 'pin';
-  };
-  attributes: {
-    site_description: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 200;
-      }>;
-    site_total_area: Attribute.Decimal & Attribute.DefaultTo<0>;
-    site_blueprint: Attribute.Media<'images'>;
-  };
-}
-
 export interface UserInfoUserDetails extends Schema.Component {
   collectionName: 'components_user_info_user_details';
   info: {
@@ -72,6 +32,30 @@ export interface UserInfoUserDetails extends Schema.Component {
   };
 }
 
+export interface UserReviewUserReview extends Schema.Component {
+  collectionName: 'components_user_review_user_reviews';
+  info: {
+    displayName: 'user_review';
+    icon: 'file';
+  };
+  attributes: {
+    rating: Attribute.Integer &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 5;
+        },
+        number
+      >;
+    review: Attribute.Blocks;
+    admin_user: Attribute.Relation<
+      'user-review.user-review',
+      'oneToOne',
+      'admin::user'
+    >;
+  };
+}
+
 export interface ResourcesResources extends Schema.Component {
   collectionName: 'components_resources_resources';
   info: {
@@ -81,6 +65,22 @@ export interface ResourcesResources extends Schema.Component {
   attributes: {
     investment_memo: Attribute.Media<'files'> & Attribute.Private;
     financial_calculator: Attribute.Media<'files'> & Attribute.Private;
+  };
+}
+
+export interface SiteInfoSiteDetails extends Schema.Component {
+  collectionName: 'components_site_info_site_details';
+  info: {
+    displayName: 'site_details';
+    icon: 'pin';
+  };
+  attributes: {
+    site_description: Attribute.Text &
+      Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    site_total_area: Attribute.Decimal & Attribute.DefaultTo<0>;
+    site_blueprint: Attribute.Media<'images'>;
   };
 }
 
@@ -239,10 +239,10 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
-      'user-review.user-review': UserReviewUserReview;
-      'site-info.site-details': SiteInfoSiteDetails;
       'user-info.user-details': UserInfoUserDetails;
+      'user-review.user-review': UserReviewUserReview;
       'resources.resources': ResourcesResources;
+      'site-info.site-details': SiteInfoSiteDetails;
       'propery-review.property-review': ProperyReviewPropertyReview;
       'property.property-details': PropertyPropertyDetails;
       'property.location': PropertyLocation;
