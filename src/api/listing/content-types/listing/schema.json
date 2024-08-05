@@ -62,12 +62,6 @@
       "type": "component",
       "repeatable": false,
       "component": "admin-use.for-admin-use-only"
-    },
-    "saved_by": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "plugin::users-permissions.user",
-      "mappedBy": "saved_properties"
     }
   }
 }
