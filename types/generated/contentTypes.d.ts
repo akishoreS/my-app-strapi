@@ -416,6 +416,33 @@ export interface ApiListingListing extends Schema.CollectionType {
   };
 }
 
+export interface ApiOtpOtp extends Schema.CollectionType {
+  collectionName: 'otps';
+  info: {
+    singularName: 'otp';
+    pluralName: 'otps';
+    displayName: 'Otp';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    otp: Attribute.Integer;
+    user_id: Attribute.Relation<
+      'api::otp.otp',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::otp.otp', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::otp.otp', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -815,11 +842,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     profile_picture: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     first_name: Attribute.String & Attribute.Required;
     last_name: Attribute.String & Attribute.Required;
-    phone_number: Attribute.String;
-    saved_properties: Attribute.Relation<
+    mobile_no: Attribute.String & Attribute.Unique;
+    otps: Attribute.Relation<
       'plugin::users-permissions.user',
-      'manyToMany',
-      'api::listing.listing'
+      'oneToMany',
+      'api::otp.otp'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -849,6 +876,7 @@ declare module '@strapi/types' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'api::listing.listing': ApiListingListing;
+      'api::otp.otp': ApiOtpOtp;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;

@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "otps",
+  "info": {
+    "singularName": "otp",
+    "pluralName": "otps",
+    "displayName": "Otp"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "otp": {
+      "type": "integer"
+    },
+    "user_id": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "otps"
+    }
+  }
+}

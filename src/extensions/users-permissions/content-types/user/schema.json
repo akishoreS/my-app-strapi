@@ -64,14 +64,17 @@
       "type": "string",
       "required": true
     },
-    "phone_number": {
-      "type": "string"
+    "mobile_no": {
+      "type": "string",
+      "required": false,
+      "unique": true,
+      "regex": "^\\d{10}$"
     },
-    "saved_properties": {
+    "otps": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::listing.listing",
-      "inversedBy": "saved_by"
+      "relation": "oneToMany",
+      "target": "api::otp.otp",
+      "mappedBy": "user_id"
     }
   }
 }
