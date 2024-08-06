@@ -767,6 +767,16 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToMany',
       'api::otp.otp'
     >;
+    app_users: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::app-user.app-user'
+    >;
+    saved_properties: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::listing.listing'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -815,6 +825,42 @@ export interface PluginFirebaseAuthFirebaseAuthConfiguration
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'plugin::firebase-auth.firebase-auth-configuration',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiAppUserAppUser extends Schema.CollectionType {
+  collectionName: 'app_users';
+  info: {
+    singularName: 'app-user';
+    pluralName: 'app-users';
+    displayName: 'App_User';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    type_login: Attribute.String & Attribute.Required;
+    token: Attribute.Text;
+    user_id: Attribute.Relation<
+      'api::app-user.app-user',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::app-user.app-user',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::app-user.app-user',
       'oneToOne',
       'admin::user'
     > &
@@ -954,6 +1000,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::firebase-auth.firebase-auth-configuration': PluginFirebaseAuthFirebaseAuthConfiguration;
+      'api::app-user.app-user': ApiAppUserAppUser;
       'api::listing.listing': ApiListingListing;
       'api::otp.otp': ApiOtpOtp;
       'api::ratings-and-review.ratings-and-review': ApiRatingsAndReviewRatingsAndReview;
