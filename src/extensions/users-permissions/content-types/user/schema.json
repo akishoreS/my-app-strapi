@@ -12,6 +12,12 @@
     "draftAndPublish": false
   },
   "attributes": {
+    "password": {
+      "type": "password",
+      "minLength": 6,
+      "configurable": false,
+      "required": true
+    },
     "email": {
       "type": "email",
       "minLength": 6,
@@ -45,6 +51,11 @@
       "inversedBy": "users",
       "configurable": false
     },
+    "username": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
     "profile_picture": {
       "type": "media",
       "multiple": false,
@@ -75,6 +86,10 @@
       "relation": "oneToMany",
       "target": "api::otp.otp",
       "mappedBy": "user_id"
+    },
+    "no_of_listings": {
+      "type": "integer",
+      "default": 0
     }
   }
 }

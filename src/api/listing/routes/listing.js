@@ -3,7 +3,8 @@
 /**
  * listing router
  */
-
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::listing.listing');
+const defaultRouter = createCoreRouter('api::listing.listing');
+
+module.exports = defaultRouter;

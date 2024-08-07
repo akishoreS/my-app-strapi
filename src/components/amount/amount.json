@@ -2,14 +2,15 @@
   "collectionName": "components_amount_amounts",
   "info": {
     "displayName": "amount",
-    "icon": "database"
+    "icon": "database",
+    "description": ""
   },
   "options": {},
   "attributes": {
     "total_amount": {
       "type": "integer",
       "default": 0,
-      "required": true
+      "required": false
     },
     "amount_breakdown": {
       "displayName": "amount_breakage",

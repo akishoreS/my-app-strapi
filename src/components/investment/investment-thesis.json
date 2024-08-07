@@ -2,18 +2,19 @@
   "collectionName": "components_investment_investment_theses",
   "info": {
     "displayName": "investment_thesis",
-    "icon": "priceTag"
+    "icon": "priceTag",
+    "description": ""
   },
   "options": {},
   "attributes": {
     "header": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "description": {
       "type": "text",
       "maxLength": 200,
-      "required": true
+      "required": false
     }
   }
 }
