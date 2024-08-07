@@ -1,8 +1,5 @@
 'use strict';
 
-/**
- * listing router
- */
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
 const defaultRouter = createCoreRouter('api::listing.listing');

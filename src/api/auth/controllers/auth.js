@@ -79,8 +79,15 @@ module.exports = {
         id: userData.id
       };
 
-      // Generate token with 30 days expiry
       const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '30d' });
+      await strapi.entityService.create('api::app-user.app-user', {
+        data: {
+          user_id: userData.id,
+          token: token,
+          type_login: "Google",
+          publishedAt: new Date()
+        }
+      });
       ctx.send({
         status: true,
         message: "Successfully google sign in.",
@@ -93,6 +100,7 @@ module.exports = {
   },
   googleAuthSample: async (ctx, next) => {
     try {
+      console.log(ctx.state.user)
       const data = await strapi.entityService.findMany('plugin::users-permissions.user', {
         fields: ['id', 'email'],
       });
@@ -165,6 +173,15 @@ module.exports = {
       const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
 
       await strapi.query('api::otp.otp').delete({ where: { id: otpId } });
+
+      await strapi.entityService.create('api::app-user.app-user', {
+        data: {
+          user_id: userData.id,
+          token: token,
+          type_login: "Mobile_no",
+          publishedAt: new Date()
+        }
+      });
 
       return ctx.send({
         status: true,

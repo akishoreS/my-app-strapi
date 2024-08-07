@@ -87,6 +87,18 @@
       "target": "api::otp.otp",
       "mappedBy": "user_id"
     },
+    "app_users": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::app-user.app-user",
+      "mappedBy": "user_id"
+    },
+    "saved_properties": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::listing.listing",
+      "inversedBy": "saved_by"
+    },
     "no_of_listings": {
       "type": "integer",
       "default": 0
