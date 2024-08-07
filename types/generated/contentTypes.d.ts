@@ -385,19 +385,16 @@ export interface ApiListingListing extends Schema.CollectionType {
       'admin::user'
     >;
     site_details: Attribute.Component<'site-info.site-details'>;
-    user_details: Attribute.Component<'user-info.user-details'> &
-      Attribute.Required;
+    user_details: Attribute.Component<'user-info.user-details'>;
     Resources: Attribute.Component<'resources.resources'> & Attribute.Private;
     legal_assistance: Attribute.Boolean & Attribute.DefaultTo<false>;
     investment_details: Attribute.Component<'investment.investment-details'>;
     amount_breakdown: Attribute.Component<'amount.amount'>;
     Location: Attribute.Component<'property.property-details'>;
     Admin_inputs: Attribute.Component<'admin-use.for-admin-use-only'>;
-    saved_by: Attribute.Relation<
-      'api::listing.listing',
-      'manyToMany',
-      'plugin::users-permissions.user'
-    >;
+    is_listed: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -825,6 +822,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
+    password: Attribute.Password &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 6;
+      }>;
     email: Attribute.Email &
       Attribute.Required &
       Attribute.SetMinMaxLength<{
@@ -839,6 +841,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    username: Attribute.String & Attribute.Required & Attribute.Unique;
     profile_picture: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     first_name: Attribute.String & Attribute.Required;
     last_name: Attribute.String & Attribute.Required;
@@ -848,6 +851,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToMany',
       'api::otp.otp'
     >;
+    no_of_listings: Attribute.Integer & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

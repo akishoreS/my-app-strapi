@@ -12,6 +12,12 @@
     "draftAndPublish": false
   },
   "attributes": {
+    "password": {
+      "type": "password",
+      "minLength": 6,
+      "configurable": false,
+      "required": true
+    },
     "email": {
       "type": "email",
       "minLength": 6,
@@ -44,6 +50,11 @@
       "target": "plugin::users-permissions.role",
       "inversedBy": "users",
       "configurable": false
+    },
+    "username": {
+      "type": "string",
+      "required": true,
+      "unique": true
     },
     "profile_picture": {
       "type": "media",
@@ -87,6 +98,10 @@
       "relation": "manyToMany",
       "target": "api::listing.listing",
       "inversedBy": "saved_by"
+    },
+    "no_of_listings": {
+      "type": "integer",
+      "default": 0
     }
   }
 }
