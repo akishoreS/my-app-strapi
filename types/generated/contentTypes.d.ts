@@ -362,84 +362,6 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
-export interface ApiListingListing extends Schema.CollectionType {
-  collectionName: 'listings';
-  info: {
-    singularName: 'listing';
-    pluralName: 'listings';
-    displayName: 'Listing';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    listed_by: Attribute.Relation<
-      'api::listing.listing',
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-    reviwed_by: Attribute.Relation<
-      'api::listing.listing',
-      'oneToOne',
-      'admin::user'
-    >;
-    site_details: Attribute.Component<'site-info.site-details'>;
-    user_details: Attribute.Component<'user-info.user-details'>;
-    Resources: Attribute.Component<'resources.resources'> & Attribute.Private;
-    legal_assistance: Attribute.Boolean & Attribute.DefaultTo<false>;
-    investment_details: Attribute.Component<'investment.investment-details'>;
-    amount_breakdown: Attribute.Component<'amount.amount'>;
-    Location: Attribute.Component<'property.property-details'>;
-    Admin_inputs: Attribute.Component<'admin-use.for-admin-use-only'>;
-    is_listed: Attribute.Boolean &
-      Attribute.Required &
-      Attribute.DefaultTo<false>;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::listing.listing',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::listing.listing',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiOtpOtp extends Schema.CollectionType {
-  collectionName: 'otps';
-  info: {
-    singularName: 'otp';
-    pluralName: 'otps';
-    displayName: 'Otp';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    otp: Attribute.Integer;
-    user_id: Attribute.Relation<
-      'api::otp.otp',
-      'manyToOne',
-      'plugin::users-permissions.user'
-    >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<'api::otp.otp', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<'api::otp.otp', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-  };
-}
-
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -861,6 +783,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToMany',
       'api::listing.listing'
     >;
+    no_of_listings: Attribute.Integer & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -916,6 +839,125 @@ export interface PluginFirebaseAuthFirebaseAuthConfiguration
   };
 }
 
+export interface ApiAppUserAppUser extends Schema.CollectionType {
+  collectionName: 'app_users';
+  info: {
+    singularName: 'app-user';
+    pluralName: 'app-users';
+    displayName: 'App_User';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    type_login: Attribute.String & Attribute.Required;
+    token: Attribute.Text;
+    user_id: Attribute.Relation<
+      'api::app-user.app-user',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::app-user.app-user',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::app-user.app-user',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiListingListing extends Schema.CollectionType {
+  collectionName: 'listings';
+  info: {
+    singularName: 'listing';
+    pluralName: 'listings';
+    displayName: 'Listing';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    listed_by: Attribute.Relation<
+      'api::listing.listing',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    reviwed_by: Attribute.Relation<
+      'api::listing.listing',
+      'oneToOne',
+      'admin::user'
+    >;
+    site_details: Attribute.Component<'site-info.site-details'>;
+    user_details: Attribute.Component<'user-info.user-details'>;
+    Resources: Attribute.Component<'resources.resources'> & Attribute.Private;
+    legal_assistance: Attribute.Boolean & Attribute.DefaultTo<false>;
+    investment_details: Attribute.Component<'investment.investment-details'>;
+    amount_breakdown: Attribute.Component<'amount.amount'>;
+    Location: Attribute.Component<'property.property-details'>;
+    Admin_inputs: Attribute.Component<'admin-use.for-admin-use-only'>;
+    is_listed: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>;
+    saved_by: Attribute.Relation<
+      'api::listing.listing',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::listing.listing',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::listing.listing',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiOtpOtp extends Schema.CollectionType {
+  collectionName: 'otps';
+  info: {
+    singularName: 'otp';
+    pluralName: 'otps';
+    displayName: 'Otp';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    otp: Attribute.Integer;
+    user_id: Attribute.Relation<
+      'api::otp.otp',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::otp.otp', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::otp.otp', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -926,8 +968,6 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
-      'api::listing.listing': ApiListingListing;
-      'api::otp.otp': ApiOtpOtp;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
@@ -937,6 +977,9 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::firebase-auth.firebase-auth-configuration': PluginFirebaseAuthFirebaseAuthConfiguration;
+      'api::app-user.app-user': ApiAppUserAppUser;
+      'api::listing.listing': ApiListingListing;
+      'api::otp.otp': ApiOtpOtp;
     }
   }
 }
