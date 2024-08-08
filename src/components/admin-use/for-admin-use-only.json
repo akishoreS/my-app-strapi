@@ -19,11 +19,9 @@
       "repeatable": true,
       "component": "user-review.user-review"
     },
-    "status": {
-      "type": "boolean"
-    },
     "totally_funded": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "target_irr": {
       "type": "decimal",

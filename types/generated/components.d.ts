@@ -5,6 +5,7 @@ export interface UserInfoUserDetails extends Schema.Component {
   info: {
     displayName: 'user_details';
     icon: 'user';
+    description: '';
   };
   attributes: {
     user_name: Attribute.String & Attribute.Required;
@@ -24,11 +25,7 @@ export interface UserInfoUserDetails extends Schema.Component {
       Attribute.SetMinMaxLength<{
         maxLength: 50;
       }>;
-    previous_work_details: Attribute.Media<
-      'files' | 'videos' | 'images',
-      true
-    > &
-      Attribute.Required;
+    previous_work_details: Attribute.Media<'files' | 'videos' | 'images', true>;
   };
 }
 
@@ -116,7 +113,7 @@ export interface PropertyPropertyDetails extends Schema.Component {
     description: '';
   };
   attributes: {
-    property_photos: Attribute.Media<'images', true> & Attribute.Required;
+    property_photos: Attribute.Media<'images', true>;
     property_overview: Attribute.Text &
       Attribute.SetMinMaxLength<{
         maxLength: 200;
@@ -141,11 +138,11 @@ export interface InvestmentInvestmentThesis extends Schema.Component {
   info: {
     displayName: 'investment_thesis';
     icon: 'priceTag';
+    description: '';
   };
   attributes: {
-    header: Attribute.String & Attribute.Required;
+    header: Attribute.String;
     description: Attribute.Text &
-      Attribute.Required &
       Attribute.SetMinMaxLength<{
         maxLength: 200;
       }>;
@@ -178,11 +175,10 @@ export interface AmountAmount extends Schema.Component {
   info: {
     displayName: 'amount';
     icon: 'database';
+    description: '';
   };
   attributes: {
-    total_amount: Attribute.Integer &
-      Attribute.Required &
-      Attribute.DefaultTo<0>;
+    total_amount: Attribute.Integer & Attribute.DefaultTo<0>;
     amount_breakdown: Attribute.Component<'amount.amount-breakage', true>;
   };
 }
@@ -215,8 +211,7 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
       true
     >;
     user_review: Attribute.Component<'user-review.user-review', true>;
-    status: Attribute.Boolean;
-    totally_funded: Attribute.Boolean;
+    totally_funded: Attribute.Boolean & Attribute.DefaultTo<false>;
     target_irr: Attribute.Decimal &
       Attribute.SetMinMax<
         {
