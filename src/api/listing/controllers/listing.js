@@ -12,8 +12,6 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
     try {
       const { listing_id } = ctx.params;
       const user = ctx.state.user;
-      console.log(user);
-      console.log(listing_id, "Listing Id");
       const listing = await strapi.entityService.findOne('api::listing.listing', listing_id, {
         populate: {
           saved_by: true
@@ -39,8 +37,6 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
     try {
       const { listing_id } = ctx.params;
       const user = ctx.state.user;
-      console.log(user);
-      console.log(listing_id, "Listing Id");
       const listing = await strapi.entityService.findOne('api::listing.listing', listing_id, {
         populate: {
           saved_by: true
@@ -57,6 +53,25 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
         data: { saved_by: updatedSavedBy },
       });
       return ctx.send({ status: true, message: "Listing successfully unsaved.", data: updatedListing }, 200);
+    } catch (err) {
+      console.error('Error:', err);
+      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
+    }
+  },
+
+  async listed_properties(ctx) {
+    try {
+      const user = ctx.state.user;
+      const listings = await strapi.entityService.findMany('api::listing.listing', {
+        filters: {
+          listed_by: user.id
+        },
+        populate: {
+          saved_by: true
+        }
+      });
+
+      return ctx.send({ status: true, message: "Listed properties.", data: listings }, 200);
     } catch (err) {
       console.error('Error:', err);
       return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);

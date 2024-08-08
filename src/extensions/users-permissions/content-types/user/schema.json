@@ -86,7 +86,7 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::listing.listing",
-      "inversedBy": "saved_by"
+      "mappedBy": "saved_by"
     }
   }
 }

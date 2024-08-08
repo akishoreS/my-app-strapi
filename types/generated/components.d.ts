@@ -1,29 +1,5 @@
 import type { Schema, Attribute } from '@strapi/strapi';
 
-export interface UserReviewUserReview extends Schema.Component {
-  collectionName: 'components_user_review_user_reviews';
-  info: {
-    displayName: 'user_review';
-    icon: 'file';
-  };
-  attributes: {
-    rating: Attribute.Integer &
-      Attribute.SetMinMax<
-        {
-          min: 1;
-          max: 5;
-        },
-        number
-      >;
-    review: Attribute.Blocks;
-    admin_user: Attribute.Relation<
-      'user-review.user-review',
-      'oneToOne',
-      'admin::user'
-    >;
-  };
-}
-
 export interface UserInfoUserDetails extends Schema.Component {
   collectionName: 'components_user_info_user_details';
   info: {
@@ -53,6 +29,30 @@ export interface UserInfoUserDetails extends Schema.Component {
       true
     > &
       Attribute.Required;
+  };
+}
+
+export interface UserReviewUserReview extends Schema.Component {
+  collectionName: 'components_user_review_user_reviews';
+  info: {
+    displayName: 'user_review';
+    icon: 'file';
+  };
+  attributes: {
+    rating: Attribute.Integer &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 5;
+        },
+        number
+      >;
+    review: Attribute.Blocks;
+    admin_user: Attribute.Relation<
+      'user-review.user-review',
+      'oneToOne',
+      'admin::user'
+    >;
   };
 }
 
@@ -239,8 +239,8 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
-      'user-review.user-review': UserReviewUserReview;
       'user-info.user-details': UserInfoUserDetails;
+      'user-review.user-review': UserReviewUserReview;
       'site-info.site-details': SiteInfoSiteDetails;
       'resources.resources': ResourcesResources;
       'propery-review.property-review': ProperyReviewPropertyReview;

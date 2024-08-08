@@ -22,5 +22,14 @@ module.exports = {
         middlewares: [],
       },
     },
+    {
+      method: 'GET',
+      path: '/listing/listed_properties',
+      handler: 'api::listing.listing.listed_properties',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ]
 }
