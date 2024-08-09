@@ -83,22 +83,6 @@ export interface ResourcesResources extends Schema.Component {
   };
 }
 
-export interface PropertyPropertyDetails extends Schema.Component {
-  collectionName: 'components_property_property_details';
-  info: {
-    displayName: 'property_details';
-    icon: 'pinMap';
-    description: '';
-  };
-  attributes: {
-    property_overview: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 200;
-      }>;
-    Property_Photos: Attribute.String;
-  };
-}
-
 export interface ProperyReviewPropertyReview extends Schema.Component {
   collectionName: 'components_prop_review_prop_reviews';
   info: {
@@ -120,6 +104,35 @@ export interface ProperyReviewPropertyReview extends Schema.Component {
       'oneToOne',
       'admin::user'
     >;
+  };
+}
+
+export interface PropertyPropertyDetails extends Schema.Component {
+  collectionName: 'components_property_property_details';
+  info: {
+    displayName: 'property_details';
+    icon: 'pinMap';
+    description: '';
+  };
+  attributes: {
+    property_overview: Attribute.Text &
+      Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    Property_Photos: Attribute.String;
+  };
+}
+
+export interface LocationDetailsLocation extends Schema.Component {
+  collectionName: 'components_locationdetails_locations';
+  info: {
+    displayName: 'Location';
+    icon: 'pinMap';
+    description: '';
+  };
+  attributes: {
+    Latitude: Attribute.Decimal;
+    Longitude: Attribute.Integer;
   };
 }
 
@@ -221,19 +234,6 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
   };
 }
 
-export interface LocationDetailsLocation extends Schema.Component {
-  collectionName: 'components_locationdetails_locations';
-  info: {
-    displayName: 'Location';
-    icon: 'pinMap';
-    description: '';
-  };
-  attributes: {
-    Latitude: Attribute.Decimal;
-    Longitude: Attribute.Integer;
-  };
-}
-
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
@@ -241,14 +241,14 @@ declare module '@strapi/types' {
       'user-info.user-details': UserInfoUserDetails;
       'site-info.site-details': SiteInfoSiteDetails;
       'resources.resources': ResourcesResources;
-      'property.property-details': PropertyPropertyDetails;
       'propery-review.property-review': ProperyReviewPropertyReview;
+      'property.property-details': PropertyPropertyDetails;
+      'location-details.location': LocationDetailsLocation;
       'investment.investment-thesis': InvestmentInvestmentThesis;
       'investment.investment-details': InvestmentInvestmentDetails;
       'amount.amount': AmountAmount;
       'amount.amount-breakage': AmountAmountBreakage;
       'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
-      'location-details.location': LocationDetailsLocation;
     }
   }
 }
