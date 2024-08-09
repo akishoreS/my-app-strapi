@@ -15,7 +15,8 @@
     "listed_by": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
+      "target": "plugin::users-permissions.user",
+      "inversedBy":"listings"
     },
     "reviwed_by": {
       "type": "relation",

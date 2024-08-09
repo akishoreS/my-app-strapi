@@ -2,7 +2,8 @@
   "collectionName": "components_site_info_site_details",
   "info": {
     "displayName": "site_details",
-    "icon": "pin"
+    "icon": "pin",
+    "description": ""
   },
   "options": {},
   "attributes": {
@@ -14,12 +15,8 @@
       "type": "decimal",
       "default": 0
     },
-    "site_blueprint": {
-      "allowedTypes": [
-        "images"
-      ],
-      "type": "media",
-      "multiple": false
+    "site_blueprint_url": {
+      "type": "text"
     }
   }
 }

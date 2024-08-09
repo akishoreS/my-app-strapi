@@ -2,25 +2,16 @@
   "collectionName": "components_resources_resources",
   "info": {
     "displayName": "Resources",
-    "icon": "filePdf"
+    "icon": "filePdf",
+    "description": ""
   },
   "options": {},
   "attributes": {
-    "investment_memo": {
-      "allowedTypes": [
-        "files"
-      ],
-      "type": "media",
-      "multiple": false,
-      "private": true
+    "investment_memo_url": {
+      "type": "text"
     },
-    "financial_calculator": {
-      "allowedTypes": [
-        "files"
-      ],
-      "type": "media",
-      "multiple": false,
-      "private": true
+    "financial_calculator_url": {
+      "type": "text"
     }
   }
 }

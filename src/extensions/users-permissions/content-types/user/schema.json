@@ -16,13 +16,13 @@
       "type": "password",
       "minLength": 6,
       "configurable": false,
-      "required": true
+      "required": false
     },
     "email": {
       "type": "email",
       "minLength": 6,
       "configurable": false,
-      "required": true
+      "required": false
     },
     "provider": {
       "type": "string",
@@ -53,7 +53,7 @@
     },
     "username": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true
     },
     "profile_picture": {
@@ -102,6 +102,12 @@
     "no_of_listings": {
       "type": "integer",
       "default": 0
+    },
+    "listings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::listing.listing",
+      "mappedBy": "listed_by"
     }
   }
 }
