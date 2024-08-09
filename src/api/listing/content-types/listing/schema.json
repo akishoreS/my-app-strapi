@@ -73,7 +73,7 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "plugin::users-permissions.user",
-      "mappedBy": "saved_properties"
+      "inversedBy": "saved_properties"
     }
   }
 }

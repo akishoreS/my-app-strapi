@@ -63,6 +63,9 @@ module.exports = {
       let userData = await strapi.query('plugin::users-permissions.user').findOne({
         where: { email: email },
       });
+      const authenticatedRole = await strapi.query('plugin::users-permissions.role').findOne({
+        where: { type: 'authenticated' },
+      });
       if(!userData){
         userData =await strapi.entityService.create('plugin::users-permissions.user', {
           data: {
@@ -71,7 +74,7 @@ module.exports = {
             last_name: lastName,
             username: firstName,
             confirmed: true,
-            role: 1
+            role: authenticatedRole.id
           }
         });
       }
@@ -79,12 +82,14 @@ module.exports = {
         id: userData.id
       };
 
+
       const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '30d' });
       await strapi.entityService.create('api::app-user.app-user', {
         data: {
           user_id: userData.id,
           token: token,
           type_login: "Google",
+          role: authenticatedRole.id,
           publishedAt: new Date()
         }
       });
@@ -101,8 +106,8 @@ module.exports = {
   googleAuthSample: async (ctx, next) => {
     try {
       console.log(ctx.state.user)
-      const data = await strapi.entityService.findMany('plugin::users-permissions.user', {
-        fields: ['id', 'email'],
+      const data = await strapi.entityService.findMany('plugin::users-permissions.role', {
+        fields: ['name', 'description'],
       });
       return data;
     } catch (err) {
@@ -118,11 +123,14 @@ module.exports = {
       let userData = await strapi.query('plugin::users-permissions.user').findOne({
         where: { mobile_no: mobile_no },
       });
+      const authenticatedRole = await strapi.query('plugin::users-permissions.role').findOne({
+        where: { type: 'authenticated' },
+      });
       if (!userData) {
         userData = await strapi.query('plugin::users-permissions.user').create({
           data: {
             mobile_no: mobile_no,
-            role:authenticatedRole
+            role: authenticatedRole.id
           },
         });
       }
@@ -197,6 +205,142 @@ module.exports = {
       return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
     }
   },
+  updateMobileNo: async (ctx, next) => {
+    try {
+      const { mobileNo } = ctx.request.body;
+      const { user } = ctx.state;
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      const otpData = await strapi.query('api::otp.otp').create({
+        data: {
+          user_id: user.id,
+          otp: otp,
+          change_mobileNo: mobileNo
+        },
+      });
 
+      ctx.send({
+        status: true,
+        message: "Otp Successfully Sent.",
+        data: otpData,
+      }, 200);
 
+    } catch (err) {
+      console.error('Error:', err);
+      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
+    }
+  },
+  verifyMobileNno: async (ctx, next) => {
+    try {
+      const { otp } = ctx.request.body;
+      const { otpId } = ctx.params;
+      const {user} = ctx.state;
+
+      const otpExist = await strapi.query('api::otp.otp').findOne({
+        where: { id: otpId },
+        select: ['id', 'otp', 'change_mobileNo'],
+        populate: { user_id: { fields: ['id', 'email'] } }
+      });
+      if (!otpExist) {
+        return ctx.send({ status: false, message: "Otp Not Found." }, 404);
+      }
+
+      if (otpExist.otp !== otp) {
+        return ctx.send({ status: false, message: "Otp Is Invalid." }, 400);
+      }
+
+      // Find user by primary key (id)
+      const userData = await strapi.query('plugin::users-permissions.user').findOne({ where: { id: otpExist.user_id.id } });
+
+      if (!userData) {
+        return ctx.send({ status: false, message: "User Not Found." }, 404);
+      }
+
+      const data = await strapi.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: {
+          mobile_no: otpExist.change_mobileNo
+        }
+      })
+      await strapi.query('api::otp.otp').delete({ where: { id: otpId } });
+
+      return ctx.send({
+        status: true,
+        message: "User Update Successfully.",
+        data: data
+      }, 200);
+
+    } catch (err) {
+      console.error('Error:', err);
+      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
+    }
+  },
+  updateEmail: async (ctx, next) => {
+    try {
+      const { email } = ctx.request.body;
+      const { user } = ctx.state;
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      const otpData = await strapi.query('api::otp.otp').create({
+        data: {
+          user_id: user.id,
+          otp: otp,
+          change_email: email
+        },
+      });
+
+      ctx.send({
+        status: true,
+        message: "Otp Successfully Sent.",
+        data: otpData,
+      }, 200);
+
+    } catch (err) {
+      console.error('Error:', err);
+      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
+    }
+  },
+  verifyEmail: async (ctx, next) => {
+    try {
+      const { otp } = ctx.request.body;
+      const { otpId } = ctx.params;
+      const {user} = ctx.state;
+
+      const otpExist = await strapi.query('api::otp.otp').findOne({
+        where: { id: otpId },
+        select: ['id', 'otp', 'change_email'],
+        populate: { user_id: { fields: ['id', 'email'] } }
+      });
+      if (!otpExist) {
+        return ctx.send({ status: false, message: "Otp Not Found." }, 404);
+      }
+
+      if (otpExist.otp !== otp) {
+        return ctx.send({ status: false, message: "Otp Is Invalid." }, 400);
+      }
+
+      // Find user by primary key (id)
+      const userData = await strapi.query('plugin::users-permissions.user').findOne({ where: { id: otpExist.user_id.id } });
+
+      if (!userData) {
+        return ctx.send({ status: false, message: "User Not Found." }, 404);
+      }
+
+      const data = await strapi.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: {
+          email: otpExist.change_email
+        }
+      })
+      await strapi.query('api::otp.otp').delete({ where: { id: otpId } });
+
+      return ctx.send({
+        status: true,
+        message: "User Update Successfully.",
+        data: data
+      }, 200);
+
+    } catch (err) {
+      console.error('Error:', err);
+      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
+    }
+  },
 };
