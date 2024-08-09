@@ -44,6 +44,42 @@ module.exports = {
         policies: [],
         middlewares: [],
       },
+    },
+    {
+      method: 'POST',
+      path: '/auth/update_mobile_no',
+      handler: 'auth.updateMobileNo',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/auth/verify_mobile_no/:otpId',
+      handler: 'auth.verifyMobileNno',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/auth/update_email',
+      handler: 'auth.updateEmail',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/auth/verify_email/:otpId',
+      handler: 'auth.verifyEmail',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
     }
   ],
 };

@@ -4,7 +4,8 @@
   "info": {
     "singularName": "otp",
     "pluralName": "otps",
-    "displayName": "Otp"
+    "displayName": "Otp",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -19,6 +20,12 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "otps"
+    },
+    "change_email": {
+      "type": "email"
+    },
+    "change_mobileNo": {
+      "type": "string"
     }
   }
 }

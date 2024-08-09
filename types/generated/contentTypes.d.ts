@@ -937,6 +937,7 @@ export interface ApiOtpOtp extends Schema.CollectionType {
     singularName: 'otp';
     pluralName: 'otps';
     displayName: 'Otp';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -948,6 +949,8 @@ export interface ApiOtpOtp extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+    change_email: Attribute.Email;
+    change_mobileNo: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
