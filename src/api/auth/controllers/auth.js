@@ -112,6 +112,9 @@ module.exports = {
   localSingIn: async (ctx, next) => {
     try {
       const { mobile_no } = ctx.request.body;
+      const authenticatedRole = await strapi.query('plugin::users-permissions.role').findOne({
+        where: { type: 'authenticated' },
+      });
       let userData = await strapi.query('plugin::users-permissions.user').findOne({
         where: { mobile_no: mobile_no },
       });
@@ -119,6 +122,7 @@ module.exports = {
         userData = await strapi.query('plugin::users-permissions.user').create({
           data: {
             mobile_no: mobile_no,
+            role:authenticatedRole
           },
         });
       }

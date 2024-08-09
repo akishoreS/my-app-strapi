@@ -15,7 +15,8 @@
     "listed_by": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
+      "target": "plugin::users-permissions.user",
+      "inversedBy":"listings"
     },
     "reviwed_by": {
       "type": "relation",
@@ -67,6 +68,12 @@
       "type": "boolean",
       "default": false,
       "required": true
+    },
+    "saved_by": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "saved_properties"
     }
   }
 }

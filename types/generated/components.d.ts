@@ -34,7 +34,6 @@ export interface UserInfoUserDetails extends Schema.Component {
   attributes: {
     user_name: Attribute.String & Attribute.Required;
     company_name: Attribute.String & Attribute.Required;
-    company_logo: Attribute.Media<'images'>;
     country_code: Attribute.String &
       Attribute.Required &
       Attribute.DefaultTo<'+91'>;
@@ -49,7 +48,8 @@ export interface UserInfoUserDetails extends Schema.Component {
       Attribute.SetMinMaxLength<{
         maxLength: 50;
       }>;
-    previous_work_details: Attribute.Media<'files' | 'videos' | 'images', true>;
+    compnay_logo_url: Attribute.String;
+    previous_work_details_url: Attribute.String;
   };
 }
 
@@ -58,6 +58,7 @@ export interface SiteInfoSiteDetails extends Schema.Component {
   info: {
     displayName: 'site_details';
     icon: 'pin';
+    description: '';
   };
   attributes: {
     site_description: Attribute.Text &
@@ -65,7 +66,7 @@ export interface SiteInfoSiteDetails extends Schema.Component {
         maxLength: 200;
       }>;
     site_total_area: Attribute.Decimal & Attribute.DefaultTo<0>;
-    site_blueprint: Attribute.Media<'images'>;
+    site_blueprint_url: Attribute.Text;
   };
 }
 
@@ -74,10 +75,27 @@ export interface ResourcesResources extends Schema.Component {
   info: {
     displayName: 'Resources';
     icon: 'filePdf';
+    description: '';
   };
   attributes: {
-    investment_memo: Attribute.Media<'files'> & Attribute.Private;
-    financial_calculator: Attribute.Media<'files'> & Attribute.Private;
+    investment_memo_url: Attribute.Text;
+    financial_calculator_url: Attribute.Text;
+  };
+}
+
+export interface PropertyPropertyDetails extends Schema.Component {
+  collectionName: 'components_property_property_details';
+  info: {
+    displayName: 'property_details';
+    icon: 'pinMap';
+    description: '';
+  };
+  attributes: {
+    property_overview: Attribute.Text &
+      Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    Property_Photos: Attribute.String;
   };
 }
 
@@ -102,34 +120,6 @@ export interface ProperyReviewPropertyReview extends Schema.Component {
       'oneToOne',
       'admin::user'
     >;
-  };
-}
-
-export interface PropertyPropertyDetails extends Schema.Component {
-  collectionName: 'components_property_property_details';
-  info: {
-    displayName: 'property_details';
-    icon: 'pinMap';
-    description: '';
-  };
-  attributes: {
-    property_photos: Attribute.Media<'images', true>;
-    property_overview: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 200;
-      }>;
-    Location: Attribute.Component<'property.location'>;
-  };
-}
-
-export interface PropertyLocation extends Schema.Component {
-  collectionName: 'components_property_locations';
-  info: {
-    displayName: 'Location';
-  };
-  attributes: {
-    Latitude: Attribute.Decimal;
-    longitude: Attribute.Decimal;
   };
 }
 
@@ -161,12 +151,12 @@ export interface InvestmentInvestmentDetails extends Schema.Component {
       Attribute.SetMinMaxLength<{
         maxLength: 200;
       }>;
-    investment_deck: Attribute.Media<'files'>;
-    financial_plan: Attribute.Media<'images' | 'files'>;
     investment_thesis: Attribute.Component<
       'investment.investment-thesis',
       true
     >;
+    investment_deck_url: Attribute.Text;
+    financial_plan_url: Attribute.Text;
   };
 }
 
@@ -231,6 +221,19 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
   };
 }
 
+export interface LocationDetailsLocation extends Schema.Component {
+  collectionName: 'components_locationdetails_locations';
+  info: {
+    displayName: 'Location';
+    icon: 'pinMap';
+    description: '';
+  };
+  attributes: {
+    Latitude: Attribute.Decimal;
+    Longitude: Attribute.Integer;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
@@ -238,14 +241,14 @@ declare module '@strapi/types' {
       'user-info.user-details': UserInfoUserDetails;
       'site-info.site-details': SiteInfoSiteDetails;
       'resources.resources': ResourcesResources;
-      'propery-review.property-review': ProperyReviewPropertyReview;
       'property.property-details': PropertyPropertyDetails;
-      'property.location': PropertyLocation;
+      'propery-review.property-review': ProperyReviewPropertyReview;
       'investment.investment-thesis': InvestmentInvestmentThesis;
       'investment.investment-details': InvestmentInvestmentDetails;
       'amount.amount': AmountAmount;
       'amount.amount-breakage': AmountAmountBreakage;
       'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
+      'location-details.location': LocationDetailsLocation;
     }
   }
 }

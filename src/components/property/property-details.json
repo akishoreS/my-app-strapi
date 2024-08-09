@@ -7,23 +7,12 @@
   },
   "options": {},
   "attributes": {
-    "property_photos": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
     "property_overview": {
       "type": "text",
       "maxLength": 200
     },
-    "Location": {
-      "displayName": "Location",
-      "type": "component",
-      "repeatable": false,
-      "component": "property.location"
+    "Property_Photos": {
+      "type": "string"
     }
   }
 }

@@ -15,14 +15,6 @@
       "type": "string",
       "required": true
     },
-    "company_logo": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
     "country_code": {
       "type": "string",
       "required": true,
@@ -42,15 +34,11 @@
       "required": true,
       "maxLength": 50
     },
-    "previous_work_details": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "files",
-        "videos",
-        "images"
-      ]
+    "compnay_logo_url": {
+      "type": "string"
+    },
+    "previous_work_details_url": {
+      "type": "string"
     }
   }
 }
