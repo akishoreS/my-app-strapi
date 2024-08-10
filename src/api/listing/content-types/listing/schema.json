@@ -16,7 +16,7 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy":"listings"
+      "inversedBy": "listings"
     },
     "reviwed_by": {
       "type": "relation",
@@ -49,12 +49,12 @@
       "repeatable": false,
       "component": "investment.investment-details"
     },
-    "amount_breakdown": {
+    "Pricing": {
       "type": "component",
       "repeatable": false,
-      "component": "amount.amount"
+      "component": "pricing.amount"
     },
-    "Location": {
+    "property_details": {
       "type": "component",
       "repeatable": false,
       "component": "property.property-details"

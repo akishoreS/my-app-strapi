@@ -97,7 +97,7 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::listing.listing",
-      "inversedBy": "saved_by"
+      "mappedBy": "saved_by"
     },
     "no_of_listings": {
       "type": "integer",
@@ -105,7 +105,7 @@
     },
     "listings": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "oneToOne",
       "target": "api::listing.listing",
       "mappedBy": "listed_by"
     }

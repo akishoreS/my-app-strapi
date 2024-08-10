@@ -67,6 +67,8 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
     console.log('Logged in user:', user.id);
     ctx.request.body.data.listed_by= user.id;
 
+    ctx.request.body.data.publishedAt = null;
+    
     const response = await super.create(ctx);
     console.log('New listing created:');
     const count = await strapi.query('api::listing.listing').count({
@@ -103,6 +105,7 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
             investment_details: true,
             amount_breakdown: true,
             Location: true,
+            property_details: true,
             Admin_inputs: {
               populate: {
                 property_review: {
@@ -112,6 +115,7 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
                   populate: { admin_user: true },
                 },
               },
+              saved_by:true,
             },
           }, // Populate all necessary relations
         });
@@ -199,8 +203,13 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
               user_details: true,
               Resources: true,
               investment_details: true,
-              amount_breakdown: true,
+              Pricing: {
+                populate:{
+                  amount_breakdown:true,
+                }
+              },
               Location: true,
+              property_details:true,
               Admin_inputs: {
                 populate: {
                   property_review: {
@@ -210,6 +219,7 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
                     populate: { admin_user: true },
                   },
                 },
+                saved_by: true
               },
             },
           });
@@ -258,22 +268,26 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
         
         const { id } = ctx.params;
     
-        // Ensure the ID is a number
+        
         if (isNaN(id)) {
           return ctx.badRequest('ID must be a number');
         }
     
-        // Fetch the listing with all necessary relations and components populated
+        
         const listing = await strapi.entityService.findOne('api::listing.listing', id, {
           populate: {
             listed_by: true,
-            reviwed_by: true,
             site_details: true,
             user_details: true,
             Resources: true,
             investment_details: true,
-            amount_breakdown: true,
+            Pricing: {
+              populate:{
+                amount_breakdown:true,
+              }
+            },
             Location: true,
+            property_details:true,
             Admin_inputs: {
               populate: {
                 property_review: {
@@ -284,7 +298,7 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
                 },
               },
             },
-            saved_by: true, // If you want to populate users who saved this listing
+            saved_by: true, 
           },
         });
     
