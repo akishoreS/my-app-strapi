@@ -186,6 +186,21 @@ export interface InvestmentInvestmentDetails extends Schema.Component {
   };
 }
 
+export interface AmountAmountBreakage extends Schema.Component {
+  collectionName: 'components_amount_amount_breakages';
+  info: {
+    displayName: 'amount_breakage';
+    icon: 'layer';
+  };
+  attributes: {
+    expense_type: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        maxLength: 15;
+      }>;
+    cost: Attribute.Integer & Attribute.DefaultTo<0>;
+  };
+}
+
 export interface AdminUseForAdminUseOnly extends Schema.Component {
   collectionName: 'components_admin_use_for_admin_use_onlies';
   info: {
@@ -219,21 +234,6 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
   };
 }
 
-export interface AmountAmountBreakage extends Schema.Component {
-  collectionName: 'components_amount_amount_breakages';
-  info: {
-    displayName: 'amount_breakage';
-    icon: 'layer';
-  };
-  attributes: {
-    expense_type: Attribute.String &
-      Attribute.SetMinMaxLength<{
-        maxLength: 15;
-      }>;
-    cost: Attribute.Integer & Attribute.DefaultTo<0>;
-  };
-}
-
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
@@ -247,8 +247,8 @@ declare module '@strapi/types' {
       'location-details.location': LocationDetailsLocation;
       'investment.investment-thesis': InvestmentInvestmentThesis;
       'investment.investment-details': InvestmentInvestmentDetails;
-      'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
       'amount.amount-breakage': AmountAmountBreakage;
+      'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
     }
   }
 }
