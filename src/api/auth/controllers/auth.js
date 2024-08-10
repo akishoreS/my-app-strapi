@@ -123,9 +123,6 @@ module.exports = {
       let userData = await strapi.query('plugin::users-permissions.user').findOne({
         where: { mobile_no: mobile_no },
       });
-      const authenticatedRole = await strapi.query('plugin::users-permissions.role').findOne({
-        where: { type: 'authenticated' },
-      });
       if (!userData) {
         userData = await strapi.query('plugin::users-permissions.user').create({
           data: {

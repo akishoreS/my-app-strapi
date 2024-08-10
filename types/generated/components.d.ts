@@ -123,6 +123,19 @@ export interface PropertyPropertyDetails extends Schema.Component {
   };
 }
 
+export interface PricingAmount extends Schema.Component {
+  collectionName: 'components_amount_amounts';
+  info: {
+    displayName: 'pricing';
+    icon: 'database';
+    description: '';
+  };
+  attributes: {
+    total_amount: Attribute.Integer & Attribute.DefaultTo<0>;
+    amount_breakdown: Attribute.Component<'amount.amount-breakage', true>;
+  };
+}
+
 export interface LocationDetailsLocation extends Schema.Component {
   collectionName: 'components_locationdetails_locations';
   info: {
@@ -173,34 +186,6 @@ export interface InvestmentInvestmentDetails extends Schema.Component {
   };
 }
 
-export interface AmountAmount extends Schema.Component {
-  collectionName: 'components_amount_amounts';
-  info: {
-    displayName: 'amount';
-    icon: 'database';
-    description: '';
-  };
-  attributes: {
-    total_amount: Attribute.Integer & Attribute.DefaultTo<0>;
-    amount_breakdown: Attribute.Component<'amount.amount-breakage', true>;
-  };
-}
-
-export interface AmountAmountBreakage extends Schema.Component {
-  collectionName: 'components_amount_amount_breakages';
-  info: {
-    displayName: 'amount_breakage';
-    icon: 'layer';
-  };
-  attributes: {
-    expense_type: Attribute.String &
-      Attribute.SetMinMaxLength<{
-        maxLength: 15;
-      }>;
-    cost: Attribute.Integer & Attribute.DefaultTo<0>;
-  };
-}
-
 export interface AdminUseForAdminUseOnly extends Schema.Component {
   collectionName: 'components_admin_use_for_admin_use_onlies';
   info: {
@@ -234,6 +219,21 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
   };
 }
 
+export interface AmountAmountBreakage extends Schema.Component {
+  collectionName: 'components_amount_amount_breakages';
+  info: {
+    displayName: 'amount_breakage';
+    icon: 'layer';
+  };
+  attributes: {
+    expense_type: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        maxLength: 15;
+      }>;
+    cost: Attribute.Integer & Attribute.DefaultTo<0>;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
@@ -243,12 +243,12 @@ declare module '@strapi/types' {
       'resources.resources': ResourcesResources;
       'propery-review.property-review': ProperyReviewPropertyReview;
       'property.property-details': PropertyPropertyDetails;
+      'pricing.amount': PricingAmount;
       'location-details.location': LocationDetailsLocation;
       'investment.investment-thesis': InvestmentInvestmentThesis;
       'investment.investment-details': InvestmentInvestmentDetails;
-      'amount.amount': AmountAmount;
-      'amount.amount-breakage': AmountAmountBreakage;
       'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
+      'amount.amount-breakage': AmountAmountBreakage;
     }
   }
 }
