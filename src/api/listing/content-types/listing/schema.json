@@ -74,6 +74,11 @@
       "relation": "manyToMany",
       "target": "plugin::users-permissions.user",
       "inversedBy": "saved_properties"
+    },
+    "Location": {
+      "type": "component",
+      "repeatable": true,
+      "component": "location-details.location"
     }
   }
 }
