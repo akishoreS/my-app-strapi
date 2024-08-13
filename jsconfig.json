@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
-    "moduleResolution": "nodenext",
-    "target": "ES2021",
-    "checkJs": true,
-    "allowJs": true
-  }
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2020",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
 }
