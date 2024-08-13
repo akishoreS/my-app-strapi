@@ -784,7 +784,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     no_of_listings: Attribute.Integer & Attribute.DefaultTo<0>;
     listings: Attribute.Relation<
       'plugin::users-permissions.user',
-      'oneToOne',
+      'oneToMany',
       'api::listing.listing'
     >;
     createdAt: Attribute.DateTime;
