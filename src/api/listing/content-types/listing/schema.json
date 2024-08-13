@@ -14,7 +14,7 @@
   "attributes": {
     "listed_by": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "listings"
     },
