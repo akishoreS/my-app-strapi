@@ -66,19 +66,17 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
     }
     console.log('Logged in user:', user.id);
     console.log('Request body before setting listed_by:', ctx.request.body);
-    ctx.request.body.data.listed_by= user.id;
 
+    ctx.request.body.data.listed_by= user.id;
     ctx.request.body.data.publishedAt = null;
     console.log('Request body after setting listed_by:', ctx.request.body);
     const response = await super.create(ctx);
+
     console.log('New listing created:');
     const count = await strapi.query('api::listing.listing').count({
         where: { listed_by: user.id },
       });
       console.log('Number of listings by user:', count);
-
-
-          // Update the user's number of listings
           const updatedUser=await strapi.query('plugin::users-permissions.user').update({
             where: { id: user.id },
             data: {
@@ -197,13 +195,21 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
           console.log('Query:', query);
 
           const listings = await strapi.entityService.findMany('api::listing.listing', {
-            // filters: query.filters,
+            filters: {
+              publishedAt: {
+                  $notNull: true,
+              },
+            },
             populate: {
               listed_by: true,
               site_details: true,
               user_details: true,
               Resources: true,
-              investment_details: true,
+              investment_details: {
+                populate:{
+                  investment_thesis:true
+                }
+              },
               Pricing: {
                 populate:{
                   amount_breakdown:true,
@@ -211,17 +217,8 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
               },
               Location: true,
               property_details:true,
-              Admin_inputs: {
-                populate: {
-                  property_review: {
-                    populate: { admin_user: true },
-                  },
-                  user_review: {
-                    populate: { admin_user: true },
-                  },
-                },
-                saved_by: true
-              },
+              Admin_inputs: true,
+              saved_by: true
             },
           });
 
@@ -249,8 +246,6 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
               userReviewCount: userReviews.length,
             };
           });
-
-          console.log('Transformed listings:', transformedListings);
 
           return this.transformResponse(transformedListings);
         } catch (error) {
@@ -281,7 +276,11 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
             site_details: true,
             user_details: true,
             Resources: true,
-            investment_details: true,
+            investment_details: {
+              populate:{
+                investment_thesis:true
+              }
+            },
             Pricing: {
               populate:{
                 amount_breakdown:true,
@@ -289,16 +288,7 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
             },
             Location: true,
             property_details:true,
-            Admin_inputs: {
-              populate: {
-                property_review: {
-                  populate: { admin_user: true },
-                },
-                user_review: {
-                  populate: { admin_user: true },
-                },
-              },
-            },
+            Admin_inputs: true,
             saved_by: true, 
           },
         });
