@@ -868,10 +868,12 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
   attributes: {
     password: Attribute.Password &
+      Attribute.Configurable &
       Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
     email: Attribute.Email &
+      Attribute.Configurable &
       Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;

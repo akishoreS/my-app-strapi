@@ -53,6 +53,19 @@ export interface UserInfoUserDetails extends Schema.Component {
   };
 }
 
+export interface ResourcesResources extends Schema.Component {
+  collectionName: 'components_resources_resources';
+  info: {
+    displayName: 'Resources';
+    icon: 'filePdf';
+    description: '';
+  };
+  attributes: {
+    investment_memo_url: Attribute.Text;
+    financial_calculator_url: Attribute.Text;
+  };
+}
+
 export interface SiteInfoSiteDetails extends Schema.Component {
   collectionName: 'components_site_info_site_details';
   info: {
@@ -67,19 +80,6 @@ export interface SiteInfoSiteDetails extends Schema.Component {
       }>;
     site_total_area: Attribute.Decimal & Attribute.DefaultTo<0>;
     site_blueprint_url: Attribute.Text;
-  };
-}
-
-export interface ResourcesResources extends Schema.Component {
-  collectionName: 'components_resources_resources';
-  info: {
-    displayName: 'Resources';
-    icon: 'filePdf';
-    description: '';
-  };
-  attributes: {
-    investment_memo_url: Attribute.Text;
-    financial_calculator_url: Attribute.Text;
   };
 }
 
@@ -239,8 +239,8 @@ declare module '@strapi/types' {
     export interface Components {
       'user-review.user-review': UserReviewUserReview;
       'user-info.user-details': UserInfoUserDetails;
-      'site-info.site-details': SiteInfoSiteDetails;
       'resources.resources': ResourcesResources;
+      'site-info.site-details': SiteInfoSiteDetails;
       'propery-review.property-review': ProperyReviewPropertyReview;
       'property.property-details': PropertyPropertyDetails;
       'pricing.amount': PricingAmount;
