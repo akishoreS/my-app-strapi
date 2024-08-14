@@ -65,10 +65,11 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
         return ctx.unauthorized('You must be logged in to create a listing');
     }
     console.log('Logged in user:', user.id);
+    console.log('Request body before setting listed_by:', ctx.request.body);
     ctx.request.body.data.listed_by= user.id;
 
     ctx.request.body.data.publishedAt = null;
-    
+    console.log('Request body after setting listed_by:', ctx.request.body);
     const response = await super.create(ctx);
     console.log('New listing created:');
     const count = await strapi.query('api::listing.listing').count({
