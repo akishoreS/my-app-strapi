@@ -69,9 +69,7 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
 
     ctx.request.body.data.listed_by= user.id;
     ctx.request.body.data.publishedAt = null;
-
     console.log('Request body after setting listed_by:', ctx.request.body);
-
     const response = await super.create(ctx);
 
     console.log('New listing created:');
