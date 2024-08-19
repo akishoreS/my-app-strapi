@@ -9,56 +9,52 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 
 module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
-  async save_listing(ctx) {
-    try {
-      const { listing_id } = ctx.params;
-      const user = ctx.state.user;
-      const listing = await strapi.entityService.findOne('api::listing.listing', listing_id, {
-        populate: {
-          saved_by: true
-        }
-      });
-      if (!listing) {
-       return ctx.send({
-          status: false,
-          message: "Listing not found",
-        }, 404);
+async toggle_save_listing(ctx) {
+  try {
+    const { listing_id } = ctx.params;
+    const user = ctx.state.user;
+
+    // Find the listing and populate the saved_by relation
+    const listing = await strapi.entityService.findOne('api::listing.listing', listing_id, {
+      populate: {
+        saved_by: true
       }
-      const updatedSavedBy = listing.saved_by ? [...listing.saved_by, user.id] : [user.id];
-      const updatedListing = await strapi.entityService.update('api::listing.listing', listing_id, {
-        data: { saved_by: updatedSavedBy },
-      });
-      return ctx.send({ status: true, message: "Listing successfully saved.", data: updatedListing }, 200);
-    } catch (err) {
-      console.error('Error:', err);
-      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
+    });
+
+    if (!listing) {
+      return ctx.send({
+        status: false,
+        message: "Listing not found",
+      }, 404);
     }
-  },
-  async unsave_listing(ctx) {
-    try {
-      const { listing_id } = ctx.params;
-      const user = ctx.state.user;
-      const listing = await strapi.entityService.findOne('api::listing.listing', listing_id, {
-        populate: {
-          saved_by: true
-        }
-      });
-      if (!listing) {
-       return ctx.send({
-          status: false,
-          message: "Listing not found",
-        }, 404);
-      }
-      const updatedSavedBy = (listing.saved_by || []).filter(userId => userId.id !== user.id);
-      const updatedListing = await strapi.entityService.update('api::listing.listing', listing_id, {
-        data: { saved_by: updatedSavedBy },
-      });
-      return ctx.send({ status: true, message: "Listing successfully unsaved.", data: updatedListing }, 200);
-    } catch (err) {
-      console.error('Error:', err);
-      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
+
+    // Check if the user has already saved the listing
+    const isAlreadySaved = listing.saved_by.some(savedUser => savedUser.id === user.id);
+
+    let updatedSavedBy;
+    let message;
+
+    if (isAlreadySaved) {
+      // Unsave the listing (remove user from saved_by)
+      updatedSavedBy = listing.saved_by.filter(savedUser => savedUser.id !== user.id);
+      message = "Listing successfully unsaved.";
+    } else {
+      // Save the listing (add user to saved_by)
+      updatedSavedBy = [...listing.saved_by, user];
+      message = "Listing successfully saved.";
     }
-  },
+
+    // Update the listing with the modified saved_by array
+    const updatedListing = await strapi.entityService.update('api::listing.listing', listing_id, {
+      data: { saved_by: updatedSavedBy },
+    });
+
+    return ctx.send({ status: true, message, data: updatedListing }, 200);
+  } catch (err) {
+    console.error('Error:', err);
+    return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
+  }
+},
   async create(ctx){
     const user = ctx.state.user;
     if (!user){
