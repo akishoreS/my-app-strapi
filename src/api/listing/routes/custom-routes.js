@@ -32,5 +32,14 @@ module.exports = {
           auth: false,
         },
       },
+      {
+        method: 'GET',
+        path: '/listing/toggle/:listing_id',
+        handler: 'api::listing.listing.toggle_save_listing',
+        config: {
+          policies: [],
+          middlewares: [],
+        },
+      },
     ],
   };

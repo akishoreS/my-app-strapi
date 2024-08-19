@@ -12,6 +12,9 @@
     },
     "Longitude": {
       "type": "integer"
+    },
+    "Address": {
+      "type": "text"
     }
   }
 }
