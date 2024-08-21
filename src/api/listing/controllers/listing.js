@@ -218,7 +218,7 @@ async toggle_save_listing(ctx) {
             },
           });
 
-
+      
           // Calculate reviews and ratings
           const transformedListings = listings.map((listing) => {
             const propertyReviews = listing.Admin_inputs?.property_review || [];
@@ -233,13 +233,17 @@ async toggle_save_listing(ctx) {
             const userAverageRating = userRatings.length
               ? userRatings.reduce((a, b) => a + b, 0) / userRatings.length
               : 0;
-
+      
+            const isSaved = ctx.state.user 
+              ? listing.saved_by.some(savedUser => savedUser.id === ctx.state.user.id)
+              : false; 
             return {
               ...listing,
               propertyAverageRating,
               propertyReviewCount: propertyReviews.length,
               userAverageRating,
               userReviewCount: userReviews.length,
+              isSaved,
             };
           });
 
@@ -292,7 +296,9 @@ async toggle_save_listing(ctx) {
         if (!listing) {
           return ctx.notFound('Listing not found');
         }
-    
+        const isSaved = ctx.state.user 
+        ? listing.saved_by.some(savedUser => savedUser.id === ctx.state.user.id)
+        : false; 
         // Transform the listing if necessary
         const transformedListing = {
           ...listing,
@@ -300,7 +306,9 @@ async toggle_save_listing(ctx) {
           propertyReviewCount: listing.Admin_inputs?.property_review?.length || 0,
           userAverageRating: calculateAverageRating(listing.Admin_inputs?.user_review),
           userReviewCount: listing.Admin_inputs?.user_review?.length || 0,
+          isSaved,
         };
+      
     
         return this.transformResponse(transformedListing);
     },
