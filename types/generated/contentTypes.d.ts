@@ -867,10 +867,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    password: Attribute.Password &
-      Attribute.SetMinMaxLength<{
-        minLength: 6;
-      }>;
     email: Attribute.Email &
       Attribute.SetMinMaxLength<{
         minLength: 6;
@@ -884,8 +880,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    password: Attribute.Password &
+      Attribute.SetMinMaxLength<{
+        minLength: 6;
+      }>;
     username: Attribute.String & Attribute.Unique;
-    profile_picture: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     first_name: Attribute.String & Attribute.Required;
     last_name: Attribute.String & Attribute.Required;
     mobile_no: Attribute.String & Attribute.Unique;
@@ -910,6 +909,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToMany',
       'api::listing.listing'
     >;
+    Profile_picture_url: Attribute.Text;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

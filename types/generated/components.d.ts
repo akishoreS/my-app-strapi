@@ -1,29 +1,5 @@
 import type { Schema, Attribute } from '@strapi/strapi';
 
-export interface UserReviewUserReview extends Schema.Component {
-  collectionName: 'components_user_review_user_reviews';
-  info: {
-    displayName: 'user_review';
-    icon: 'file';
-  };
-  attributes: {
-    rating: Attribute.Integer &
-      Attribute.SetMinMax<
-        {
-          min: 1;
-          max: 5;
-        },
-        number
-      >;
-    review: Attribute.Blocks;
-    admin_user: Attribute.Relation<
-      'user-review.user-review',
-      'oneToOne',
-      'admin::user'
-    >;
-  };
-}
-
 export interface UserInfoUserDetails extends Schema.Component {
   collectionName: 'components_user_info_user_details';
   info: {
@@ -83,10 +59,10 @@ export interface ResourcesResources extends Schema.Component {
   };
 }
 
-export interface ProperyReviewPropertyReview extends Schema.Component {
-  collectionName: 'components_prop_review_prop_reviews';
+export interface UserReviewUserReview extends Schema.Component {
+  collectionName: 'components_user_review_user_reviews';
   info: {
-    displayName: 'prop_rev';
+    displayName: 'user_review';
     icon: 'file';
   };
   attributes: {
@@ -100,7 +76,7 @@ export interface ProperyReviewPropertyReview extends Schema.Component {
       >;
     review: Attribute.Blocks;
     admin_user: Attribute.Relation<
-      'propery-review.property-review',
+      'user-review.user-review',
       'oneToOne',
       'admin::user'
     >;
@@ -150,40 +126,27 @@ export interface LocationDetailsLocation extends Schema.Component {
   };
 }
 
-export interface InvestmentInvestmentThesis extends Schema.Component {
-  collectionName: 'components_investment_investment_theses';
+export interface ProperyReviewPropertyReview extends Schema.Component {
+  collectionName: 'components_prop_review_prop_reviews';
   info: {
-    displayName: 'investment_thesis';
-    icon: 'priceTag';
-    description: '';
+    displayName: 'prop_rev';
+    icon: 'file';
   };
   attributes: {
-    header: Attribute.String;
-    description: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 200;
-      }>;
-  };
-}
-
-export interface InvestmentInvestmentDetails extends Schema.Component {
-  collectionName: 'components_investment_investment_details';
-  info: {
-    displayName: 'Investment_details';
-    icon: 'stack';
-    description: '';
-  };
-  attributes: {
-    current_funding_details: Attribute.String &
-      Attribute.SetMinMaxLength<{
-        maxLength: 200;
-      }>;
-    investment_thesis: Attribute.Component<
-      'investment.investment-thesis',
-      true
+    rating: Attribute.Integer &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 5;
+        },
+        number
+      >;
+    review: Attribute.Blocks;
+    admin_user: Attribute.Relation<
+      'propery-review.property-review',
+      'oneToOne',
+      'admin::user'
     >;
-    investment_deck_url: Attribute.Text;
-    financial_plan_url: Attribute.Text;
   };
 }
 
@@ -235,21 +198,58 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
   };
 }
 
+export interface InvestmentInvestmentThesis extends Schema.Component {
+  collectionName: 'components_investment_investment_theses';
+  info: {
+    displayName: 'investment_thesis';
+    icon: 'priceTag';
+    description: '';
+  };
+  attributes: {
+    header: Attribute.String;
+    description: Attribute.Text &
+      Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+  };
+}
+
+export interface InvestmentInvestmentDetails extends Schema.Component {
+  collectionName: 'components_investment_investment_details';
+  info: {
+    displayName: 'Investment_details';
+    icon: 'stack';
+    description: '';
+  };
+  attributes: {
+    current_funding_details: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    investment_thesis: Attribute.Component<
+      'investment.investment-thesis',
+      true
+    >;
+    investment_deck_url: Attribute.Text;
+    financial_plan_url: Attribute.Text;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
-      'user-review.user-review': UserReviewUserReview;
       'user-info.user-details': UserInfoUserDetails;
       'site-info.site-details': SiteInfoSiteDetails;
       'resources.resources': ResourcesResources;
-      'propery-review.property-review': ProperyReviewPropertyReview;
+      'user-review.user-review': UserReviewUserReview;
       'property.property-details': PropertyPropertyDetails;
       'pricing.amount': PricingAmount;
       'location-details.location': LocationDetailsLocation;
-      'investment.investment-thesis': InvestmentInvestmentThesis;
-      'investment.investment-details': InvestmentInvestmentDetails;
+      'propery-review.property-review': ProperyReviewPropertyReview;
       'amount.amount-breakage': AmountAmountBreakage;
       'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
+      'investment.investment-thesis': InvestmentInvestmentThesis;
+      'investment.investment-details': InvestmentInvestmentDetails;
     }
   }
 }

@@ -6,6 +6,7 @@ module.exports = {
         handler: 'listing.findMyListings',
         config: {
           policies: [],
+          middlewares: [],
         },
       },
       {
@@ -21,7 +22,8 @@ module.exports = {
         path: '/listings',
         handler: 'listing.find',
         config: {
-          auth: false,
+          policies: [],
+          middlewares: [],
         },
       },
       {
@@ -29,7 +31,8 @@ module.exports = {
         path: '/listings/:id',
         handler: 'listing.findOne',
         config: {
-          auth: false,
+          policies: [],
+          middlewares: [],
         },
       },
       {
