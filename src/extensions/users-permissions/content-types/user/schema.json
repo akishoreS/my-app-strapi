@@ -12,12 +12,6 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "password": {
-      "type": "password",
-      "minLength": 6,
-      "configurable": false,
-      "required": false
-    },
     "email": {
       "type": "email",
       "minLength": 6,
@@ -51,21 +45,15 @@
       "inversedBy": "users",
       "configurable": false
     },
+    "password": {
+      "type": "password",
+      "minLength": 6,
+      "required": false
+    },
     "username": {
       "type": "string",
       "required": false,
       "unique": true
-    },
-    "profile_picture": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
     },
     "first_name": {
       "type": "string",
@@ -108,6 +96,9 @@
       "relation": "oneToMany",
       "target": "api::listing.listing",
       "mappedBy": "listed_by"
+    },
+    "Profile_picture_url": {
+      "type": "text"
     }
   }
 }
