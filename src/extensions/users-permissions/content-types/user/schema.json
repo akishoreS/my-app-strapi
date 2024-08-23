@@ -99,6 +99,12 @@
     },
     "Profile_picture_url": {
       "type": "text"
+    },
+    "views": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::view.view",
+      "mappedBy": "users_permissions_user"
     }
   }
 }

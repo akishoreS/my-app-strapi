@@ -79,6 +79,12 @@
       "type": "component",
       "repeatable": true,
       "component": "location-details.location"
+    },
+    "views": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::view.view",
+      "mappedBy": "listing"
     }
   }
 }
