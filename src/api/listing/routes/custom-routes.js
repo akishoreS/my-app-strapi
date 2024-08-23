@@ -11,14 +11,6 @@ module.exports = {
       },
       {
         method: 'GET',
-        path: '/listings/:id/reviews',
-        handler: 'listing.getListingReviews',
-        config: {
-          policies: [],
-        },
-      },
-      {
-        method: 'GET',
         path: '/listings',
         handler: 'listing.find',
         config: {

@@ -103,17 +103,25 @@ async toggle_save_listing(ctx) {
             property_details: true,
             Admin_inputs: {
               populate: {
-                property_review: {
-                  populate: { admin_user: true },
-                },
-                user_review: {
-                  populate: { admin_user: true },
-                },
-              },
-              saved_by:true,
+                property_review: true,
+                user_review: true,
+              }, 
             },
-          }, // Populate all necessary relations
+            saved_by:true,
+          },
         });
+        const activeViewCounts = await Promise.all(
+          listings.map(async (listing) => {
+            const count = await strapi.entityService.count('api::view.view', {
+              filters: {
+                listing: listing.id,
+                user: { $notNull: true } 
+              }
+            });
+            return { listingId: listing.id, activeViewCount: count };
+          })
+        );
+      
         const transformedListings = listings.map((listing) => {
             const propertyReviews = listing.Admin_inputs?.property_review || [];
             const userReviews = listing.Admin_inputs?.user_review || [];
@@ -127,13 +135,14 @@ async toggle_save_listing(ctx) {
             const userAverageRating = userRatings.length
               ? userRatings.reduce((a, b) => a + b, 0) / userRatings.length
               : 0;
-
+            const viewCountData = activeViewCounts.find(item => item.listingId === listing.id);
             return {
               ...listing,
               propertyAverageRating,
               propertyReviewCount: propertyReviews.length,
               userAverageRating,
               userReviewCount: userReviews.length,
+              activeViewCount: viewCountData ? viewCountData.activeViewCount : 0 
             };
           });
 
@@ -143,57 +152,16 @@ async toggle_save_listing(ctx) {
 
         // return ctx.send({ data: listings });
       },
-
-      // Method to get reviews and ratings for listings
-      async getListingReviews(ctx) {
-        const { id } = ctx.params;
-
-        const listing = await strapi.entityService.findOne('api::listing.listing', id, {
-          populate: {
-            Admin_inputs: {
-              populate: {
-                property_review: true,
-                user_review: true,
-              },
-            },
-          },
-        });
-
-        if (!listing) {
-          return ctx.notFound('Listing not found');
-        }
-
-        const propertyReviews = listing.Admin_inputs.property_review;
-        const userReviews = listing.Admin_inputs.user_review;
-
-        const calculateAverageRating = (reviews) => {
-          if (reviews.length === 0) return 0;
-          const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-          return total / reviews.length;
-        };
-
-        const propertyAverageRating = calculateAverageRating(propertyReviews);
-        const userAverageRating = calculateAverageRating(userReviews);
-
-        return ctx.send({
-          propertyReviews,
-          userReviews,
-          propertyAverageRating,
-          userAverageRating,
-        });
-      },
       async find(ctx) {
         try {
           console.log('Context:', ctx);
-
-          // Fetch all listings with nested population
           const { query } = ctx;
           console.log('Query:', query);
-
+      
           const listings = await strapi.entityService.findMany('api::listing.listing', {
             filters: {
               publishedAt: {
-                  $notNull: true,
+                $notNull: true,
               },
             },
             populate: {
@@ -202,31 +170,34 @@ async toggle_save_listing(ctx) {
               user_details: true,
               Resources: true,
               investment_details: {
-                populate:{
-                  investment_thesis:true
+                populate: {
+                  investment_thesis: true
                 }
               },
               Pricing: {
-                populate:{
-                  amount_breakdown:true,
+                populate: {
+                  amount_breakdown: true,
                 }
               },
               Location: true,
-              property_details:true,
-              Admin_inputs: true,
+              property_details: true,
+              Admin_inputs: {
+                populate:{
+                  property_review:true,
+                  user_review:true
+                }
+              },
               saved_by: true
             },
           });
-
       
           // Calculate reviews and ratings
           const transformedListings = listings.map((listing) => {
             const propertyReviews = listing.Admin_inputs?.property_review || [];
             const userReviews = listing.Admin_inputs?.user_review || [];
-
             const propertyRatings = propertyReviews.map((review) => review.rating);
             const userRatings = userReviews.map((review) => review.rating);
-
+      
             const propertyAverageRating = propertyRatings.length
               ? propertyRatings.reduce((a, b) => a + b, 0) / propertyRatings.length
               : 0;
@@ -236,7 +207,7 @@ async toggle_save_listing(ctx) {
       
             const isSaved = ctx.state.user 
               ? listing.saved_by.some(savedUser => savedUser.id === ctx.state.user.id)
-              : false; 
+              : false
             return {
               ...listing,
               propertyAverageRating,
@@ -246,13 +217,14 @@ async toggle_save_listing(ctx) {
               isSaved,
             };
           });
-
+      
           return this.transformResponse(transformedListings);
         } catch (error) {
           console.error('Error in find method:', error);
           ctx.throw(500, 'Internal Server Error');
         }
       },
+      
       async findOne(ctx) {
         function calculateAverageRating(reviews) {
             if (!reviews || reviews.length === 0) {
@@ -263,13 +235,23 @@ async toggle_save_listing(ctx) {
           }
         
         const { id } = ctx.params;
-    
+          // Check if the user is authenticated
+          if (ctx.state.user) {
+            // Create a new view entry
+            await strapi.entityService.create('api::view.view', {
+              data: {
+                listing: id,
+                user: ctx.state.user.id
+              }
+            });
+          }
         
-        if (isNaN(id)) {
-          return ctx.badRequest('ID must be a number');
-        }
-    
-        
+          const activeViewCount = await strapi.entityService.count('api::view.view', {
+            filters: {
+              listing: id,
+              user: { $notNull: true } // Only consider views with associated users
+            }
+          });
         const listing = await strapi.entityService.findOne('api::listing.listing', id, {
           populate: {
             listed_by: true,
@@ -288,7 +270,12 @@ async toggle_save_listing(ctx) {
             },
             Location: true,
             property_details:true,
-            Admin_inputs: true,
+            Admin_inputs: {
+              populate:{
+                property_review:true,
+                user_review:true
+              }
+            },
             saved_by: true, 
           },
         });
@@ -307,29 +294,8 @@ async toggle_save_listing(ctx) {
           userAverageRating: calculateAverageRating(listing.Admin_inputs?.user_review),
           userReviewCount: listing.Admin_inputs?.user_review?.length || 0,
           isSaved,
+          activeViewCount,
         };
-      
-    
         return this.transformResponse(transformedListing);
     },
-    
-  async listed_properties(ctx) {
-    try {
-      const user = ctx.state.user;
-      const listings = await strapi.entityService.findMany('api::listing.listing', {
-        filters: {
-          listed_by: user.id
-        },
-        populate: {
-          saved_by: true
-        }
-      });
-
-      return ctx.send({ status: true, message: "Listed properties.", data: listings }, 200);
-    } catch (err) {
-      console.error('Error:', err);
-      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
-    }
-  },
     }));
-

@@ -8,10 +8,10 @@
   "options": {},
   "attributes": {
     "Latitude": {
-      "type": "decimal"
+      "type": "float"
     },
     "Longitude": {
-      "type": "integer"
+      "type": "float"
     },
     "Address": {
       "type": "text"
