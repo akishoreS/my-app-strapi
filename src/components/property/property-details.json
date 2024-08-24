@@ -11,8 +11,9 @@
       "type": "text",
       "maxLength": 200
     },
-    "Property_Photos": {
+    "Property_Photos": [
       "type": "string"
-    }
+    ]
+    
   }
 }
