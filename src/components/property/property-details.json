@@ -11,9 +11,11 @@
       "type": "text",
       "maxLength": 200
     },
-    "Property_Photos": [
-      "type": "string"
-    ]
+    "Property_Photos": {
+      "type": "json",
+      "repeatable": true,
+      "required": false
+    }
     
   }
 }
