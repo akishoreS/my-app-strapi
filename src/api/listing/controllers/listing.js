@@ -93,20 +93,15 @@ async toggle_save_listing(ctx) {
         const listings = await strapi.entityService.findMany('api::listing.listing', {
           filters: { listed_by: user.id },
           populate: {
-            listed_by: true,
-            site_details: true,
+            // listed_by: true,
+            // site_details: true,
             user_details: true,
-            Resources: true,
-            investment_details: true,
-            amount_breakdown: true,
+            // Resources: true,
+            // investment_details: true,
+            // amount_breakdown: true,
             Location: true,
             property_details: true,
-            Admin_inputs: {
-              populate: {
-                property_review: true,
-                user_review: true,
-              }, 
-            },
+            Admin_inputs:true,
             saved_by:true,
           },
         });
@@ -123,25 +118,25 @@ async toggle_save_listing(ctx) {
         );
       
         const transformedListings = listings.map((listing) => {
-            const propertyReviews = listing.Admin_inputs?.property_review || [];
-            const userReviews = listing.Admin_inputs?.user_review || [];
+            // const propertyReviews = listing.Admin_inputs?.property_review || [];
+            // const userReviews = listing.Admin_inputs?.user_review || [];
 
-            const propertyRatings = propertyReviews.map((review) => review.rating);
-            const userRatings = userReviews.map((review) => review.rating);
+            // const propertyRatings = propertyReviews.map((review) => review.rating);
+            // const userRatings = userReviews.map((review) => review.rating);
 
-            const propertyAverageRating = propertyRatings.length
-              ? propertyRatings.reduce((a, b) => a + b, 0) / propertyRatings.length
-              : 0;
-            const userAverageRating = userRatings.length
-              ? userRatings.reduce((a, b) => a + b, 0) / userRatings.length
-              : 0;
+            // const propertyAverageRating = propertyRatings.length
+            //   ? propertyRatings.reduce((a, b) => a + b, 0) / propertyRatings.length
+            //   : 0;
+            // const userAverageRating = userRatings.length
+            //   ? userRatings.reduce((a, b) => a + b, 0) / userRatings.length
+            //   : 0;
             const viewCountData = activeViewCounts.find(item => item.listingId === listing.id);
             return {
               ...listing,
-              propertyAverageRating,
-              propertyReviewCount: propertyReviews.length,
-              userAverageRating,
-              userReviewCount: userReviews.length,
+              // propertyAverageRating,
+              // propertyReviewCount: propertyReviews.length,
+              // userAverageRating,
+              // userReviewCount: userReviews.length,
               activeViewCount: viewCountData ? viewCountData.activeViewCount : 0 
             };
           });
@@ -156,64 +151,70 @@ async toggle_save_listing(ctx) {
         try {
           console.log('Context:', ctx);
           const { query } = ctx;
-          console.log('Query:', query);
-      
-          const listings = await strapi.entityService.findMany('api::listing.listing', {
-            filters: {
-              publishedAt: {
-                $notNull: true,
-              },
+          const filters = {
+            publishedAt: {
+              $notNull: true,
             },
+          };
+          console.log('Query:', query);
+   
+    // if (query.location) {
+    //   filters['Location.Address'] = {
+    //     $containsi: query.location, 
+    //   };
+    // }
+    // if (query.company_name) {
+    //   filters['user_details.company_name'] = {
+    //     $containsi: query.company_name, 
+    //   };
+    // }
+    const listings = await strapi.entityService.findMany('api::listing.listing', {
+      filters: filters,
             populate: {
-              listed_by: true,
-              site_details: true,
+              // listed_by: true,
+              // site_details: true,
               user_details: true,
-              Resources: true,
-              investment_details: {
-                populate: {
-                  investment_thesis: true
-                }
-              },
-              Pricing: {
-                populate: {
-                  amount_breakdown: true,
-                }
-              },
+              // Resources: true,
+              // investment_details: {
+              //   populate: {
+              //     investment_thesis: true
+              //   }
+              // },
+              // Pricing: {
+              //   populate: {
+              //     amount_breakdown: true,
+              //   }
+              // },
               Location: true,
               property_details: true,
-              Admin_inputs: {
-                populate:{
-                  property_review:true,
-                  user_review:true
-                }
-              },
+              Admin_inputs: true,
               saved_by: true
             },
           });
       
           // Calculate reviews and ratings
           const transformedListings = listings.map((listing) => {
-            const propertyReviews = listing.Admin_inputs?.property_review || [];
-            const userReviews = listing.Admin_inputs?.user_review || [];
-            const propertyRatings = propertyReviews.map((review) => review.rating);
-            const userRatings = userReviews.map((review) => review.rating);
+            // const propertyReviews = listing.Admin_inputs?.property_review || [];
+            // const userReviews = listing.Admin_inputs?.user_review || [];
+            // const propertyRatings = propertyReviews.map((review) => review.rating);
+            // const userRatings = userReviews.map((review) => review.rating);
       
-            const propertyAverageRating = propertyRatings.length
-              ? propertyRatings.reduce((a, b) => a + b, 0) / propertyRatings.length
-              : 0;
-            const userAverageRating = userRatings.length
-              ? userRatings.reduce((a, b) => a + b, 0) / userRatings.length
-              : 0;
+            // const propertyAverageRating = propertyRatings.length
+            //   ? propertyRatings.reduce((a, b) => a + b, 0) / propertyRatings.length
+            //   : 0;
+            // const userAverageRating = userRatings.length
+            //   ? userRatings.reduce((a, b) => a + b, 0) / userRatings.length
+            //   : 0;
       
             const isSaved = ctx.state.user 
               ? listing.saved_by.some(savedUser => savedUser.id === ctx.state.user.id)
               : false
             return {
               ...listing,
-              propertyAverageRating,
-              propertyReviewCount: propertyReviews.length,
-              userAverageRating,
-              userReviewCount: userReviews.length,
+              // propertyAverageRating,
+              // propertyReviewCount: propertyReviews.length,
+              // userAverageRating,
+              // userReviewCount: userReviews.length,
               isSaved,
             };
           });
