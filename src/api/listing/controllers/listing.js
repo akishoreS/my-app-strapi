@@ -140,16 +140,11 @@ async toggle_save_listing(ctx) {
               activeViewCount: viewCountData ? viewCountData.activeViewCount : 0 
             };
           });
-
           console.log('Transformed listings:', transformedListings);
-
           return this.transformResponse(transformedListings);
-
-        // return ctx.send({ data: listings });
       },
       async find(ctx) {
         try {
-          console.log('Context:', ctx);
           const { query } = ctx;
           const filters = {
             publishedAt: {
@@ -157,17 +152,6 @@ async toggle_save_listing(ctx) {
             },
           };
           console.log('Query:', query);
-   
-    // if (query.location) {
-    //   filters['Location.Address'] = {
-    //     $containsi: query.location, 
-    //   };
-    // }
-    // if (query.company_name) {
-    //   filters['user_details.company_name'] = {
-    //     $containsi: query.company_name, 
-    //   };
-    // }
     const listings = await strapi.entityService.findMany('api::listing.listing', {
       filters: filters,
             populate: {
@@ -191,33 +175,36 @@ async toggle_save_listing(ctx) {
               saved_by: true
             },
           });
+          const filteredListings = listings.filter(listing => {
+            let locationMatches = true;
+            let companyMatches = true;
+
+            // Filter by location if provided
+            if (query.location) {
+                locationMatches = listing.Location.some(loc => 
+                    loc.Address && loc.Address.toLowerCase().includes(query.location.toLowerCase())
+                );
+            }
+
+            // Filter by company name if provided
+            if (query.company_name) {
+                companyMatches = listing.user_details.company_name &&
+                    listing.user_details.company_name.toLowerCase().includes(query.company_name.toLowerCase());
+            }
+
+            // Include the listing if both filters match
+            return locationMatches && companyMatches;
+        });
       
-          // Calculate reviews and ratings
-          const transformedListings = listings.map((listing) => {
-            // const propertyReviews = listing.Admin_inputs?.property_review || [];
-            // const userReviews = listing.Admin_inputs?.user_review || [];
-            // const propertyRatings = propertyReviews.map((review) => review.rating);
-            // const userRatings = userReviews.map((review) => review.rating);
-      
-            // const propertyAverageRating = propertyRatings.length
-            //   ? propertyRatings.reduce((a, b) => a + b, 0) / propertyRatings.length
-            //   : 0;
-            // const userAverageRating = userRatings.length
-            //   ? userRatings.reduce((a, b) => a + b, 0) / userRatings.length
-            //   : 0;
-      
+          const transformedListings = filteredListings.map(listing => {
             const isSaved = ctx.state.user 
-              ? listing.saved_by.some(savedUser => savedUser.id === ctx.state.user.id)
-              : false
+                ? listing.saved_by.some(savedUser => savedUser.id === ctx.state.user.id)
+                : false;
             return {
-              ...listing,
-              // propertyAverageRating,
-              // propertyReviewCount: propertyReviews.length,
-              // userAverageRating,
-              // userReviewCount: userReviews.length,
-              isSaved,
+                ...listing,
+                isSaved,
             };
-          });
+        });
       
           return this.transformResponse(transformedListings);
         } catch (error) {
@@ -225,7 +212,6 @@ async toggle_save_listing(ctx) {
           ctx.throw(500, 'Internal Server Error');
         }
       },
-      
       async findOne(ctx) {
         function calculateAverageRating(reviews) {
             if (!reviews || reviews.length === 0) {
