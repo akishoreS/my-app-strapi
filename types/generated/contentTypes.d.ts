@@ -927,6 +927,7 @@ export interface ApiOtpOtp extends Schema.CollectionType {
     >;
     change_email: Attribute.Email;
     change_mobileNo: Attribute.String;
+    otpLess_request_id: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

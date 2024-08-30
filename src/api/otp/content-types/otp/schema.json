@@ -26,6 +26,9 @@
     },
     "change_mobileNo": {
       "type": "string"
+    },
+    "otpLess_request_id": {
+      "type": "string"
     }
   }
 }

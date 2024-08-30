@@ -16,6 +16,7 @@
     "@strapi/plugin-i18n": "4.25.4",
     "@strapi/plugin-users-permissions": "4.25.4",
     "@strapi/strapi": "^4.25.4",
+    "axios": "^1.7.5",
     "better-sqlite3": "8.6.0",
     "dotenv": "^16.4.5",
     "google-auth-library": "^9.13.0",

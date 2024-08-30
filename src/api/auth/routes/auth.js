@@ -30,7 +30,7 @@ module.exports = {
     {
      method: 'POST',
      path: '/auth/sign_in',
-     handler: 'auth.localSingIn',
+     handler: 'auth.localSignIn',
      config: {
        policies: [],
        middlewares: [],
@@ -80,6 +80,15 @@ module.exports = {
         policies: [],
         middlewares: [],
       },
-    }
+    },
+    {
+      method: 'POST',
+      path: '/auth/google_access_token',
+      handler: 'auth.googleAccessToken',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
