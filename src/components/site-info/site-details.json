@@ -9,7 +9,7 @@
   "attributes": {
     "site_description": {
       "type": "text",
-      "maxLength": 200
+      "maxLength": 500
     },
     "site_total_area": {
       "type": "decimal",

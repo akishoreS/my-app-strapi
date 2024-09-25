@@ -49,7 +49,10 @@ export interface UserInfoUserDetails extends Schema.Component {
         maxLength: 50;
       }>;
     compnay_logo_url: Attribute.String;
-    previous_work_details_url: Attribute.String;
+    previous_work_details_url: Attribute.Text &
+      Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
   };
 }
 
@@ -63,7 +66,7 @@ export interface SiteInfoSiteDetails extends Schema.Component {
   attributes: {
     site_description: Attribute.Text &
       Attribute.SetMinMaxLength<{
-        maxLength: 200;
+        maxLength: 500;
       }>;
     site_total_area: Attribute.Decimal & Attribute.DefaultTo<0>;
     site_blueprint_url: Attribute.Text;
@@ -117,7 +120,7 @@ export interface PropertyPropertyDetails extends Schema.Component {
   attributes: {
     property_overview: Attribute.Text &
       Attribute.SetMinMaxLength<{
-        maxLength: 200;
+        maxLength: 500;
       }>;
     Property_Photos: Attribute.JSON;
   };
@@ -158,10 +161,13 @@ export interface InvestmentInvestmentThesis extends Schema.Component {
     description: '';
   };
   attributes: {
-    header: Attribute.String;
+    header: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        maxLength: 30;
+      }>;
     description: Attribute.Text &
       Attribute.SetMinMaxLength<{
-        maxLength: 200;
+        maxLength: 500;
       }>;
   };
 }
@@ -174,9 +180,9 @@ export interface InvestmentInvestmentDetails extends Schema.Component {
     description: '';
   };
   attributes: {
-    current_funding_details: Attribute.String &
+    current_funding_details: Attribute.Text &
       Attribute.SetMinMaxLength<{
-        maxLength: 200;
+        maxLength: 500;
       }>;
     investment_thesis: Attribute.Component<
       'investment.investment-thesis',
@@ -192,11 +198,12 @@ export interface AmountAmountBreakage extends Schema.Component {
   info: {
     displayName: 'amount_breakage';
     icon: 'layer';
+    description: '';
   };
   attributes: {
     expense_type: Attribute.String &
       Attribute.SetMinMaxLength<{
-        maxLength: 15;
+        maxLength: 30;
       }>;
     cost: Attribute.Integer & Attribute.DefaultTo<0>;
   };
