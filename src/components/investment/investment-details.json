@@ -8,8 +8,8 @@
   "options": {},
   "attributes": {
     "current_funding_details": {
-      "type": "string",
-      "maxLength": 200
+      "type": "text",
+      "maxLength": 500
     },
     "investment_thesis": {
       "displayName": "investment_thesis",

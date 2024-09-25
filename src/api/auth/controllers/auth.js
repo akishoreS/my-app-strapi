@@ -18,7 +18,7 @@ const OTP_CLIENT_SECRET = process.env.OTP_CLIENT_SECRET
 
 
 const apiClient = axios.create({
-  baseURL: "https://auth.otpless.app/auth/v1",
+  baseURL: "https://auth.otpless.app/auth/otp/v1",
   headers: {
     "Content-Type": "application/json",
     clientId: OTP_CLIENT_ID,
@@ -26,6 +26,152 @@ const apiClient = axios.create({
   },
 });
 module.exports = {
+  localSignIn: async (ctx, next) => {
+    try {
+      const { mobile_no } = ctx.request.body;
+  
+      const authenticatedRole = await strapi.query('plugin::users-permissions.role').findOne({
+        where: { type: 'authenticated' },
+      });
+  
+      const formattedMobileNo = mobile_no.startsWith('+') ? mobile_no : `+${mobile_no}`;
+  
+      let userData = await strapi.query('plugin::users-permissions.user').findOne({
+        where: { mobile_no: formattedMobileNo },
+      });
+  
+      if (!userData) {
+        userData = await strapi.query('plugin::users-permissions.user').create({
+          data: {
+            mobile_no: formattedMobileNo,
+            role: authenticatedRole.id,
+          },
+        });
+      }
+  
+      const otpLessData = await apiClient.post('/send', {
+        phoneNumber: formattedMobileNo,
+        otpLength: 6,
+        channels: ["SMS"],
+      });
+  
+      // Log full OTP response
+      console.log('OTP Less Data:', otpLessData); 
+  
+      const otpResponseData = otpLessData?.data ?? null;
+  
+      if (!otpResponseData?.orderId) {
+        console.log('Error: No requestId returned by OTP service', otpResponseData); // Log what was returned
+        ctx.send({
+          status: false,
+          message: "OTP not sent.",
+        }, 400);
+        return;
+      }
+  
+      const otpData = await strapi.query('api::otp.otp').create({
+        data: {
+          otpLess_request_id: otpResponseData.orderId,
+          userId: userData.id,
+        },
+      });
+  
+      ctx.send({
+        status: true,
+        message: "OTP successfully sent.",
+        data: otpData,
+      }, 200);
+  
+      return userData;
+  
+    } catch (err) {
+      console.error('Error in localSignIn:', err);
+  
+      if (err.response) {
+        console.log('API Error:', err.response.data); // Log API error response
+        ctx.send({
+          status: false,
+          message: 'OTP service error: ' + (err.response.data.message || 'Unknown error'),
+          error: err.response.data,
+        }, err.response.status || 500);
+      } else {
+        ctx.send({
+          status: false,
+          message: 'An error occurred during the sign-in process.',
+          error: err.message || 'Unknown error',
+        }, 500);
+      }
+    }
+  },
+  otpVerify: async (ctx, next) => {
+    try {
+      const { otp } = ctx.request.body;
+      const { otpId } = ctx.params;
+  
+      // Check if OTP exists
+      const otpExist = await strapi.query('api::otp.otp').findOne({
+        where: { otpLess_request_id: otpId },
+        select: ['id', 'otpLess_request_id'],
+        populate: { user_id: { fields: ['id', 'email'] } }
+      });
+  
+      if (!otpExist) {
+        return ctx.send({ status: false, message: "Otp Not Found." }, 404);
+      }
+  
+      // Log the data to verify
+      console.log('Verifying OTP:', { orderId: otpId, otp });
+  
+      // Call the verify API
+      const verifyOtpResponse = await apiClient.post('/verify', {
+        orderId: otpId,
+        otp: otp
+      });
+  
+      // Log the full response for debugging
+      console.log('OTP Verification Response:', verifyOtpResponse.data);
+  
+      const verifyOtpData = verifyOtpResponse?.data ?? null;
+  
+      if (!verifyOtpData?.isOTPVerified) {
+        return ctx.send({ status: false, message: "Otp Is Invalid." }, 400);
+      }
+  
+      // Find user by primary key (id)
+      const userData = await strapi.query('plugin::users-permissions.user').findOne({ where: { id: otpExist.user_id.id } });
+  
+      if (!userData) {
+        return ctx.send({ status: false, message: "User Not Found." }, 404);
+      }
+  
+      const payload = { id: userData.id };
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
+  
+      // Delete OTP record after successful verification
+      await strapi.query('api::otp.otp').delete({ where: { otpLess_request_id: otpId } });
+  
+      // Create entry for app-user
+      await strapi.entityService.create('api::app-user.app-user', {
+        data: {
+          user_id: userData.id,
+          token: token,
+          type_login: "Mobile_no",
+          publishedAt: new Date()
+        }
+      });
+  
+      return ctx.send({
+        status: true,
+        message: "Otp is Valid.",
+        data: { user: userData, token }
+      }, 200);
+  
+    } catch (err) {
+      console.error('Error:', err.response ? err.response.data : err.message);
+      return ctx.send({ status: false, message: "Internal Server Error.", error: err.response ? err.response.data : err.message }, 500);
+    }
+  },
+  
   googleAuth: async (ctx, next) => {
     try {
       const client = new OAuth2Client(
@@ -127,125 +273,8 @@ module.exports = {
       ctx.body = err;
     }
   },
-  localSignIn: async (ctx, next) => {
-    try {
-      const { mobile_no } = ctx.request.body;
 
-      const authenticatedRole = await strapi.query('plugin::users-permissions.role').findOne({
-        where: { type: 'authenticated' },
-      });
-
-      let userData = await strapi.query('plugin::users-permissions.user').findOne({
-        where: { mobile_no: mobile_no },
-      });
-
-      if (!userData) {
-        userData = await strapi.query('plugin::users-permissions.user').create({
-          data: {
-            mobile_no: mobile_no,
-            role: authenticatedRole.id,
-          },
-        });
-      }
-
-      const otpLessData = await apiClient.post('/initiate/otp', {
-        phoneNumber: mobile_no,
-        otpLength: 6,
-        channels: ["SMS"],
-      });
-
-      const otpResponseData = otpLessData?.data ?? null;
-
-      if (!otpResponseData?.requestId) {
-        ctx.send({
-          status: false,
-          message: "OTP not sent.",
-        }, 400);
-        return;
-      }
-
-      const otpData = await strapi.query('api::otp.otp').create({
-        data: {
-          otpLess_request_id: otpResponseData.requestId,
-          userId: userData.id,
-        },
-      });
-
-      ctx.send({
-        status: true,
-        message: "OTP successfully sent.",
-        data: otpData,
-      }, 200);
-
-      return userData;
-
-    } catch (err) {
-      console.error('Error in localSignIn:', err);
-      ctx.send({
-        status: false,
-        message: 'An error occurred during the sign-in process.',
-        error: err.message || 'Unknown error',
-      }, 500);
-    }
-  },
-  otpVerify: async (ctx, next) => {
-    try {
-      const { otp } = ctx.request.body;
-      const { otpId } = ctx.params;
-
-      const otpExist = await strapi.query('api::otp.otp').findOne({
-        where: { otpLess_request_id: otpId },
-        select: ['id', 'otpLess_request_id'],
-        populate: { user_id: { fields: ['id', 'email'] } }
-      });
-      if (!otpExist) {
-        return ctx.send({ status: false, message: "Otp Not Found." }, 404);
-      }
-
-      const verifyOtpResponse = await apiClient.post('/verify/otp', {
-        requestId: otpId,
-        otp: otp
-      })
-
-      const verifyOtpData = verifyOtpResponse?.data ?? null;
-      if (!verifyOtpData?.isOTPVerified) {
-        return ctx.send({ status: false, message: "Otp Is Invalid." }, 400);
-      }
-
-      // Find user by primary key (id)
-      const userData = await strapi.query('plugin::users-permissions.user').findOne({ where: { id: otpExist.user_id.id } });
-
-      if (!userData) {
-        return ctx.send({ status: false, message: "User Not Found." }, 404);
-      }
-
-      const payload = {
-        id: userData.id
-      };
-
-      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
-
-      await strapi.query('api::otp.otp').delete({ where: { otpLess_request_id: otpId } });
-
-      await strapi.entityService.create('api::app-user.app-user', {
-        data: {
-          user_id: userData.id,
-          token: token,
-          type_login: "Mobile_no",
-          publishedAt: new Date()
-        }
-      });
-
-      return ctx.send({
-        status: true,
-        message: "Otp is Valid.",
-        data: { user: userData, token }
-      }, 200);
-    } catch (err) {
-      console.error('Error:', err);
-      return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
-    }
-  },
+  
   updateMobileNo: async (ctx, next) => {
     try {
       const { mobileNo } = ctx.request.body;
@@ -402,7 +431,7 @@ module.exports = {
       }
       const email = userInfo["email"];
       const firstName = userInfo["given_name"];
-      const lastName = userInfo["family_name"];
+      const lastName = userInfo["family_name"]|| 'N/A';
       let userData = await strapi.query('plugin::users-permissions.user').findOne({
         where: { email: email },
       });

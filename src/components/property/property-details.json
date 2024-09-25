@@ -9,13 +9,12 @@
   "attributes": {
     "property_overview": {
       "type": "text",
-      "maxLength": 200
+      "maxLength": 500
     },
     "Property_Photos": {
       "type": "json",
       "repeatable": true,
       "required": false
     }
-    
   }
 }

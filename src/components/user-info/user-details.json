@@ -38,7 +38,8 @@
       "type": "string"
     },
     "previous_work_details_url": {
-      "type": "string"
+      "type": "text",
+      "maxLength": 500
     }
   }
 }
