@@ -242,6 +242,7 @@ module.exports = {
         phoneNumber: formattedMobileNo,
         otpLength: 6, // Number of digits in the OTP
         channels: ["SMS"], // Send via SMS
+        expiry: 60
       });
   
       const otpResponseData = otpLessData?.data ?? null;
@@ -338,6 +339,7 @@ module.exports = {
         email, // Send OTP to the new email address
         otpLength: 6, // Number of digits in the OTP
         channels: ["EMAIL"], // Send via email
+        expiry: 60
       });
   
       const otpResponseData = otpLessData?.data ?? null;
