@@ -10,8 +10,8 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios')
 
 const JWT_SECRET = process.env.JWT_SECRET
-const OTP_CLIENT_ID=T95VQTHVJ5F6CXFO7OLQ2KBHSA39AXRC
-const OTP_CLIENT_SECRET=bs68sdzd8pixq10l4egg6eexmb0xayc1
+const OTP_CLIENT_ID='T95VQTHVJ5F6CXFO7OLQ2KBHSA39AXRC'
+const OTP_CLIENT_SECRET='bs68sdzd8pixq10l4egg6eexmb0xayc1'
 
 
 const apiClient = axios.create({
