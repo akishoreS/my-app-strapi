@@ -214,7 +214,7 @@ module.exports = {
         });
   
         // Delete OTP record after successful verification
-        await strapi.query('api::otp.otp').delete({ where: { id: otpId } });
+        await strapi.query('api::otp.otp').delete({ where: { otpLess_request_id : otpId } });
   
         return ctx.send({
           status: true,
@@ -409,7 +409,7 @@ module.exports = {
         });
   
         // Delete OTP record after successful verification
-        await strapi.query('api::otp.otp').delete({ where: { id: otpId } });
+        await strapi.query('api::otp.otp').delete({ where: {otpLess_request_id: otpId } });
   
         return ctx.send({
           status: true,
