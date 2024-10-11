@@ -54,9 +54,7 @@ module.exports = {
         otpLength: 6,
         channels: ["SMS"],
       });
-  
-      // Log full OTP response
-      console.log('OTP Less Data:', otpLessData);
+
   
       const otpResponseData = otpLessData?.data ?? null;
   
@@ -106,6 +104,7 @@ module.exports = {
       }
     }
   },
+
   otpVerify: async (ctx, next) => {
     try {
       const { otp } = ctx.request.body;
@@ -175,6 +174,7 @@ module.exports = {
       return ctx.send({ status: false, message: "Internal Server Error.", error: err.response ? err.response.data : err.message }, 500);
     }
   },
+
   verifyMobileNo: async (ctx, next) => {
     try {
       const { otp } = ctx.request.body;
@@ -229,7 +229,7 @@ module.exports = {
       return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
     }
   },
-  
+
   updateMobileNo: async (ctx, next) => {
     try {
       const { mobileNo } = ctx.request.body;
@@ -242,6 +242,7 @@ module.exports = {
         phoneNumber: formattedMobileNo,
         otpLength: 6, // Number of digits in the OTP
         channels: ["SMS"], // Send via SMS
+        expiry: 60
       });
   
       const otpResponseData = otpLessData?.data ?? null;
@@ -273,61 +274,7 @@ module.exports = {
       return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
     }
   },
-  
-  // verifyMobileNo: async (ctx, next) => {
-  //   try {
-  //     const { otp } = ctx.request.body;
-  //     const { otpId } = ctx.params;
-  //     const { user } = ctx.state;
-  
-  //     // Fetch the OTP record with the requestId and new mobile number
-  //     const otpRecord = await strapi.query('api::otp.otp').findOne({
-  //       where: { otpLess_request_id: otpId },
-  //       select: ['id', 'otpLess_request_id', 'change_mobileNo'],
-  //       populate: { user_id: { fields: ['id', 'email'] } }
-  //     });
-  
-  //     if (!otpRecord) {
-  //       return ctx.send({ status: false, message: "OTP not found." }, 404);
-  //     }
-  
-  //     // Verify the OTP via the external OTP-less service
-  //     const otpVerificationResponse = await apiClient.post('/verify', {
-  //       phoneNumber: otpRecord.change_mobileNo,
-  //       orderId : otpId,
-  //       otp, // User-entered OTP
-  //     });
-  //     if (otpVerificationResponse?.isOTPVerified) {
-  //       // Update user with the new mobile number if OTP is valid
-  //       const updatedUser = await strapi.query('plugin::users-permissions.user').update({
-  //         where: { id: user.id },
-  //         data: {
-  //           mobile_no: otpRecord.change_mobileNo,
-  //         }
-  //       });
-  
-  //       // Delete OTP record after successful verification
-  //       await strapi.query('api::otp.otp').delete({ where: { id: otpId } });
-  
-  //       return ctx.send({
-  //         status: true,
-  //         message: "Mobile number updated successfully.",
-  //         data: updatedUser,
-  //       }, 200);
-  
-  //     } else {
-  //       return ctx.send({
-  //         status: false,
-  //         message: "Invalid OTP.",
-  //       }, 400);
-  //     }
-  
-  //   } catch (err) {
-  //     console.error('Error in verifyMobileNo:', err);
-  //     return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
-  //   }
-  // },
-  
+
   updateEmail: async (ctx, next) => {
     try {
       const { email } = ctx.request.body;
@@ -338,6 +285,7 @@ module.exports = {
         email, // Send OTP to the new email address
         otpLength: 6, // Number of digits in the OTP
         channels: ["EMAIL"], // Send via email
+        expiry: 60
       });
   
       const otpResponseData = otpLessData?.data ?? null;
@@ -369,7 +317,7 @@ module.exports = {
       return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
     }
   },
-  
+
   verifyEmail: async (ctx, next) => {
     try {
       const { otp } = ctx.request.body;
@@ -424,7 +372,7 @@ module.exports = {
       return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
     }
   },
-  
+
   googleAccessToken: async (ctx, next) => {
     try {
       const { accessToken } = ctx.request.body;
@@ -488,4 +436,42 @@ module.exports = {
       return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
     }
   },
+
+  deleteAccount: async(ctx,next) => {
+    try {
+      // Get the authenticated user
+      const user = ctx.state.user;
+
+      if (!user) {
+        return ctx.unauthorized('You must be logged in to delete your account.');
+      }
+
+      const userId = user.id;
+
+      // Delete associated data (Optional, based on your business logic)
+      // For example, if you want to delete listings related to the user:
+      // await strapi.entityService.deleteMany('api::listing.listing', {
+      //   filters: { listed_by: userId }
+      // });
+
+      // Delete the user from the Users & Permissions plugin
+      await strapi.plugins['users-permissions'].services.user.remove({ id: userId });
+
+      // Optionally log out the user after deletion
+      ctx.cookies.set('token', null);
+
+      return ctx.send({ 
+        status: true, 
+        message: 'User account deleted successfully.' 
+      });
+    } catch (error) {
+      console.error('Error deleting user account:', error);
+      return ctx.send({
+        status: false,
+        message: 'Internal Server Error. Unable to delete user account.',
+        error: error.message,
+      }, 500);
+    }
+  },
+  
 };

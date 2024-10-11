@@ -110,22 +110,6 @@ export interface ProperyReviewPropertyReview extends Schema.Component {
   };
 }
 
-export interface PropertyPropertyDetails extends Schema.Component {
-  collectionName: 'components_property_property_details';
-  info: {
-    displayName: 'property_details';
-    icon: 'pinMap';
-    description: '';
-  };
-  attributes: {
-    property_overview: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 500;
-      }>;
-    Property_Photos: Attribute.JSON;
-  };
-}
-
 export interface PricingAmount extends Schema.Component {
   collectionName: 'components_amount_amounts';
   info: {
@@ -193,19 +177,19 @@ export interface InvestmentInvestmentDetails extends Schema.Component {
   };
 }
 
-export interface AmountAmountBreakage extends Schema.Component {
-  collectionName: 'components_amount_amount_breakages';
+export interface PropertyPropertyDetails extends Schema.Component {
+  collectionName: 'components_property_property_details';
   info: {
-    displayName: 'amount_breakage';
-    icon: 'layer';
+    displayName: 'property_details';
+    icon: 'pinMap';
     description: '';
   };
   attributes: {
-    expense_type: Attribute.String &
+    property_overview: Attribute.Text &
       Attribute.SetMinMaxLength<{
-        maxLength: 30;
+        maxLength: 500;
       }>;
-    cost: Attribute.Integer & Attribute.DefaultTo<0>;
+    Property_Photos: Attribute.JSON;
   };
 }
 
@@ -242,6 +226,22 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
   };
 }
 
+export interface AmountAmountBreakage extends Schema.Component {
+  collectionName: 'components_amount_amount_breakages';
+  info: {
+    displayName: 'amount_breakage';
+    icon: 'layer';
+    description: '';
+  };
+  attributes: {
+    expense_type: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        maxLength: 30;
+      }>;
+    cost: Attribute.Integer & Attribute.DefaultTo<0>;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
@@ -250,13 +250,13 @@ declare module '@strapi/types' {
       'site-info.site-details': SiteInfoSiteDetails;
       'resources.resources': ResourcesResources;
       'propery-review.property-review': ProperyReviewPropertyReview;
-      'property.property-details': PropertyPropertyDetails;
       'pricing.amount': PricingAmount;
       'location-details.location': LocationDetailsLocation;
       'investment.investment-thesis': InvestmentInvestmentThesis;
       'investment.investment-details': InvestmentInvestmentDetails;
-      'amount.amount-breakage': AmountAmountBreakage;
+      'property.property-details': PropertyPropertyDetails;
       'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
+      'amount.amount-breakage': AmountAmountBreakage;
     }
   }
 }
