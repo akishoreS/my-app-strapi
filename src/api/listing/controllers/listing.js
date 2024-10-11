@@ -7,9 +7,76 @@ const jwt = require("jsonwebtoken");
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
+const axios = require('axios'); 
 
 module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
-async toggle_save_listing(ctx) {
+  async sharePropertyLink (ctx ) {
+    try {
+      const { propertyId } = ctx.params;
+  
+      // Fetch property details from the database
+      const property =await strapi.entityService.findOne('api::listing.listing', propertyId, {
+        populate: {
+          listed_by: true,
+          site_details: true,
+          user_details: true,
+          Resources: true,
+          investment_details: {
+            populate:{
+              investment_thesis:true
+            }
+          },
+          Pricing: {
+            populate:{
+              amount_breakdown:true,
+            }
+          },
+          Location: true,
+          property_details:true,
+          Admin_inputs: {
+            populate:{
+              property_review:true,
+              user_review:true
+            }
+          },
+          saved_by: true, 
+        },
+      });
+  
+      if (!property) {
+        return ctx.send({ status: false, message: "Property not found." }, 404);
+      }
+      console.log(property)
+      // Firebase Dynamic Link API call
+      const firebaseResponse = await axios.post(
+        `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key= AIzaSyAukOIcatXurYv8GUpCliapV6vm_C4mIwU`,
+        {
+          dynamicLinkInfo: {
+            domainUriPrefix: "https://bhumiii.page.link", // Your Firebase dynamic link domain
+            link: `http://localhost:1337/property/${propertyId}`, // Local deep link for testing
+            androidInfo: {
+              androidPackageName: "com.bhumii.app", // Your Android package name
+            },
+            iosInfo: {
+              iosBundleId: "com.bhumii.app", // Your iOS bundle ID
+            },
+          },
+        }
+      );
+  
+      const dynamicLink = firebaseResponse.data.shortLink;
+  
+      return ctx.send({
+        status: true,
+        message: "Shareable link created successfully.",
+        data: { link: dynamicLink },
+      }, 200);
+    } catch (err) {
+      console.error('Error in sharePropertyLink:', err);
+      return ctx.send({ status: false, message: 'Internal Server Error.', error: err }, 500);
+    }
+    },
+  async toggle_save_listing(ctx) {
   try {
     const { listing_id } = ctx.params;
     const user = ctx.state.user;
@@ -54,37 +121,29 @@ async toggle_save_listing(ctx) {
     console.error('Error:', err);
     return ctx.send({ status: false, message: "Internal Server Error.", error: err }, 500);
   }
-},
+    },
   async create(ctx){
     const user = ctx.state.user;
     if (!user){
         return ctx.unauthorized('You must be logged in to create a listing');
     }
-    console.log('Logged in user:', user.id);
-    console.log('Request body before setting listed_by:', ctx.request.body);
-
     ctx.request.body.data.listed_by= user.id;
     ctx.request.body.data.publishedAt = null;
-    console.log('Request body after setting listed_by:', ctx.request.body);
     const response = await super.create(ctx);
-
-    console.log('New listing created:');
     const count = await strapi.query('api::listing.listing').count({
         where: { listed_by: user.id },
       });
-      console.log('Number of listings by user:', count);
           const updatedUser=await strapi.query('plugin::users-permissions.user').update({
             where: { id: user.id },
             data: {
               no_of_listings: count,
             },
           });
-          console.log('User updated:', updatedUser);
 
         return response;
 
     },
-    async findMyListings(ctx) {
+  async findMyListings(ctx) {
         const { user } = ctx.state;
         if (!user) {
           return ctx.unauthorized('You must be logged in to view your listings');
@@ -93,12 +152,7 @@ async toggle_save_listing(ctx) {
         const listings = await strapi.entityService.findMany('api::listing.listing', {
           filters: { listed_by: user.id },
           populate: {
-            // listed_by: true,
-            // site_details: true,
             user_details: true,
-            // Resources: true,
-            // investment_details: true,
-            // amount_breakdown: true,
             Location: true,
             property_details: true,
             Admin_inputs:true,
@@ -118,32 +172,15 @@ async toggle_save_listing(ctx) {
         );
       
         const transformedListings = listings.map((listing) => {
-            // const propertyReviews = listing.Admin_inputs?.property_review || [];
-            // const userReviews = listing.Admin_inputs?.user_review || [];
-
-            // const propertyRatings = propertyReviews.map((review) => review.rating);
-            // const userRatings = userReviews.map((review) => review.rating);
-
-            // const propertyAverageRating = propertyRatings.length
-            //   ? propertyRatings.reduce((a, b) => a + b, 0) / propertyRatings.length
-            //   : 0;
-            // const userAverageRating = userRatings.length
-            //   ? userRatings.reduce((a, b) => a + b, 0) / userRatings.length
-            //   : 0;
             const viewCountData = activeViewCounts.find(item => item.listingId === listing.id);
             return {
               ...listing,
-              // propertyAverageRating,
-              // propertyReviewCount: propertyReviews.length,
-              // userAverageRating,
-              // userReviewCount: userReviews.length,
               activeViewCount: viewCountData ? viewCountData.activeViewCount : 0 
             };
           });
-          console.log('Transformed listings:', transformedListings);
           return this.transformResponse(transformedListings);
-      },
-      async find(ctx) {
+    },
+  async find(ctx) {
         try {
           const { query } = ctx;
           const filters = {
@@ -151,24 +188,10 @@ async toggle_save_listing(ctx) {
               $notNull: true,
             },
           };
-          console.log('Query:', query);
     const listings = await strapi.entityService.findMany('api::listing.listing', {
       filters: filters,
             populate: {
-              // listed_by: true,
-              // site_details: true,
               user_details: true,
-              // Resources: true,
-              // investment_details: {
-              //   populate: {
-              //     investment_thesis: true
-              //   }
-              // },
-              // Pricing: {
-              //   populate: {
-              //     amount_breakdown: true,
-              //   }
-              // },
               Location: true,
               property_details: true,
               Admin_inputs: true,
@@ -211,8 +234,8 @@ async toggle_save_listing(ctx) {
           console.error('Error in find method:', error);
           ctx.throw(500, 'Internal Server Error');
         }
-      },
-      async findOne(ctx) {
+    },
+  async findOne(ctx) {
         function calculateAverageRating(reviews) {
             if (!reviews || reviews.length === 0) {
               return 0;
@@ -263,16 +286,17 @@ async toggle_save_listing(ctx) {
                 user_review:true
               }
             },
-            saved_by: true, 
+            saved_by:true, 
           },
         });
-    
+
         if (!listing) {
           return ctx.notFound('Listing not found');
         }
         const isSaved = ctx.state.user 
         ? listing.saved_by.some(savedUser => savedUser.id === ctx.state.user.id)
         : false; 
+        const savedBy = listing.saved_by && listing.saved_by.length === 0 ? null : listing.saved_by;
         // Transform the listing if necessary
         const transformedListing = {
           ...listing,
@@ -282,7 +306,48 @@ async toggle_save_listing(ctx) {
           userReviewCount: listing.Admin_inputs?.user_review?.length || 0,
           isSaved,
           activeViewCount,
+          saved_by:savedBy
         };
         return this.transformResponse(transformedListing);
+    },
+  async decreaseViewCount(ctx) {
+      const { id } = ctx.params; // Property ID
+      const user = ctx.state.user; // Authenticated user
+  
+      try {
+        if (!user) {
+          return ctx.unauthorized('You must be logged in to decrease a view.');
+        }
+  
+        // Find the view entry related to this listing and user
+        const viewEntry = await strapi.entityService.findMany('api::view.view', {
+          filters: {
+            listing: id,
+            user: user.id,
+          },
+          limit: 1, // We only expect one view entry per user per listing
+        });
+  
+        if (!viewEntry || viewEntry.length === 0) {
+          return ctx.send({
+            status: false,
+            message: 'No active view found for this property.',
+          }, 404);
+        }
+  
+        // Delete the view entry for the current user and listing
+        await strapi.entityService.delete('api::view.view', viewEntry[0].id);
+  
+        return ctx.send({
+          status: true,
+          message: 'View count decreased successfully.',
+        });
+      } catch (error) {
+        console.error('Error decreasing view count:', error);
+        return ctx.send({
+          status: false,
+          message: 'Internal Server Error. Could not decrease view count.',
+        }, 500);
+      }
     },
     }));

@@ -30,7 +30,25 @@ module.exports = {
       {
         method: 'GET',
         path: '/listing/toggle/:listing_id',
-        handler: 'api::listing.listing.toggle_save_listing',
+        handler: 'listing.toggle_save_listing',
+        config: {
+          policies: [],
+          middlewares: [],
+        },
+      },
+      {
+        method: "POST",
+        path: "/share_property_link/:propertyId",
+        handler:'listing.sharePropertyLink',
+        config: {
+          policies: [],
+          middlewares: [],
+        },
+      },
+      {
+        method: 'POST', 
+        path: '/listings/:id/decrease-view',
+        handler: 'listing.decreaseViewCount',
         config: {
           policies: [],
           middlewares: [],

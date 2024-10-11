@@ -63,5 +63,14 @@ module.exports = {
         middlewares: [],
       },
     },
+    {
+      method: 'DELETE',
+      path: '/auth/delete_account',
+      handler: 'auth.deleteAccount',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    }
   ],
 };
