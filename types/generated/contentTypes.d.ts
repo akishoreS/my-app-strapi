@@ -815,6 +815,7 @@ export interface ApiAppUserAppUser extends Schema.CollectionType {
     singularName: 'app-user';
     pluralName: 'app-users';
     displayName: 'App_User';
+    description: '';
   };
   options: {
     draftAndPublish: true;

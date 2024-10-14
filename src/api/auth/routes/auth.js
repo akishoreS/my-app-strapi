@@ -71,6 +71,15 @@ module.exports = {
         policies: [],
         middlewares: [],
       },
+    },
+    {
+      method: 'PUT',
+      path: '/auth/profile',
+      handler: 'auth.updateProfile',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
     }
   ],
 };

@@ -175,6 +175,54 @@ module.exports = {
     }
   },
 
+  updateProfile: async(ctx, next) => {
+      try {
+        
+        const { id } = ctx.state.user;  // The user must be logged in to update the profile
+        const { first_name, last_name, email, profile_picture_url } = ctx.request.body; // Expect profile_picture_url from frontend
+  
+        const user = await strapi.query('plugin::users-permissions.user').findOne({ where: { id } });
+  
+        if (!user) {
+          return ctx.send({ status: false, message: "User not found." }, 404);
+        }
+
+        if (email !== user.email) {
+          const emailExists = await strapi.query('plugin::users-permissions.user').findOne({ where: { email, id: { $ne: id } } });
+          if (emailExists) {
+            return ctx.send({ status: false, message: "This email is already in use by another account." }, 400);
+          }
+        }
+  
+        const updatedData = {
+          first_name,
+          last_name,
+          email,
+          username: email,  
+          password: email,  
+        };
+
+        if (profile_picture_url) {
+          updatedData.Profile_picture_url = profile_picture_url;
+        }
+
+        const updatedUser = await strapi.query('plugin::users-permissions.user').update({
+          where: { id },
+          data: updatedData,
+        });
+  
+        return ctx.send({
+          status: true,
+          message: "Profile updated successfully.",
+          data: updatedUser,
+        }, 200);
+  
+      } catch (err) {
+        console.error('Error in updateProfile:', err);
+        return ctx.send({ status: false, message: "Internal Server Error.", error: err.message }, 500);
+      }
+  },
+  
   verifyMobileNo: async (ctx, next) => {
     try {
       const { otp } = ctx.request.body;
@@ -236,6 +284,20 @@ module.exports = {
       const { user } = ctx.state;
   
       const formattedMobileNo = mobileNo.startsWith('+') ? mobileNo : `+${mobileNo}`;
+      
+      if (user.mobile_no === formattedMobileNo) {
+        return ctx.send({
+          status: false,
+          message: "The new mobile number cannot be the same as the current one.",
+        }, 400);
+      }
+      const existingUser = await strapi.query('plugin::users-permissions.user').findOne({
+        where: { mobile_no: formattedMobileNo },
+      });
+  
+      if (existingUser && existingUser.id !== user.id) {
+        return ctx.send({ status: false, message: "Mobile number is already in use." }, 400);
+      }
   
       // Request OTP-less to send OTP to the new mobile number
       const otpLessData = await apiClient.post('/send', {
@@ -279,7 +341,25 @@ module.exports = {
     try {
       const { email } = ctx.request.body;
       const { user } = ctx.state;
+      
+      if (!email) {
+        return ctx.send({ status: false, message: "Email is required." }, 400);
+      }
+      if (user.email === email.toLowerCase()) {
+        return ctx.send({
+          status: false,
+          message: "The new email cannot be the same as the current one.",
+        }, 400);
+      }
+      // Check if the email already exists
+      const existingUser = await strapi.query('plugin::users-permissions.user').findOne({
+        where: { email: email.toLowerCase() },
+      });
   
+      if (existingUser && existingUser.id !== user.id) {
+        return ctx.send({ status: false, message: "Email is already in use." }, 400);
+      }
+
       // Assuming you have an OTP-less API that can handle email verification
       const otpLessData = await apiClient.post('/send', {
         email, // Send OTP to the new email address
@@ -473,5 +553,4 @@ module.exports = {
       }, 500);
     }
   },
-  
 };

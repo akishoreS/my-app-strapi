@@ -123,7 +123,7 @@ module.exports = createCoreController('api::listing.listing', ({ strapi }) => ({
   }
     },
   async create(ctx){
-    const user = ctx.state.user;
+    const {user} = ctx.state;
     if (!user){
         return ctx.unauthorized('You must be logged in to create a listing');
     }

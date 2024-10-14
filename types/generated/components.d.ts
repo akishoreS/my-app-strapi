@@ -73,19 +73,6 @@ export interface SiteInfoSiteDetails extends Schema.Component {
   };
 }
 
-export interface ResourcesResources extends Schema.Component {
-  collectionName: 'components_resources_resources';
-  info: {
-    displayName: 'Resources';
-    icon: 'filePdf';
-    description: '';
-  };
-  attributes: {
-    investment_memo_url: Attribute.Text;
-    financial_calculator_url: Attribute.Text;
-  };
-}
-
 export interface ProperyReviewPropertyReview extends Schema.Component {
   collectionName: 'components_prop_review_prop_reviews';
   info: {
@@ -107,6 +94,35 @@ export interface ProperyReviewPropertyReview extends Schema.Component {
       'oneToOne',
       'admin::user'
     >;
+  };
+}
+
+export interface ResourcesResources extends Schema.Component {
+  collectionName: 'components_resources_resources';
+  info: {
+    displayName: 'Resources';
+    icon: 'filePdf';
+    description: '';
+  };
+  attributes: {
+    investment_memo_url: Attribute.Text;
+    financial_calculator_url: Attribute.Text;
+  };
+}
+
+export interface PropertyPropertyDetails extends Schema.Component {
+  collectionName: 'components_property_property_details';
+  info: {
+    displayName: 'property_details';
+    icon: 'pinMap';
+    description: '';
+  };
+  attributes: {
+    property_overview: Attribute.Text &
+      Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    Property_Photos: Attribute.JSON;
   };
 }
 
@@ -177,19 +193,19 @@ export interface InvestmentInvestmentDetails extends Schema.Component {
   };
 }
 
-export interface PropertyPropertyDetails extends Schema.Component {
-  collectionName: 'components_property_property_details';
+export interface AmountAmountBreakage extends Schema.Component {
+  collectionName: 'components_amount_amount_breakages';
   info: {
-    displayName: 'property_details';
-    icon: 'pinMap';
+    displayName: 'amount_breakage';
+    icon: 'layer';
     description: '';
   };
   attributes: {
-    property_overview: Attribute.Text &
+    expense_type: Attribute.String &
       Attribute.SetMinMaxLength<{
-        maxLength: 500;
+        maxLength: 30;
       }>;
-    Property_Photos: Attribute.JSON;
+    cost: Attribute.Integer & Attribute.DefaultTo<0>;
   };
 }
 
@@ -226,37 +242,21 @@ export interface AdminUseForAdminUseOnly extends Schema.Component {
   };
 }
 
-export interface AmountAmountBreakage extends Schema.Component {
-  collectionName: 'components_amount_amount_breakages';
-  info: {
-    displayName: 'amount_breakage';
-    icon: 'layer';
-    description: '';
-  };
-  attributes: {
-    expense_type: Attribute.String &
-      Attribute.SetMinMaxLength<{
-        maxLength: 30;
-      }>;
-    cost: Attribute.Integer & Attribute.DefaultTo<0>;
-  };
-}
-
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
       'user-review.user-review': UserReviewUserReview;
       'user-info.user-details': UserInfoUserDetails;
       'site-info.site-details': SiteInfoSiteDetails;
-      'resources.resources': ResourcesResources;
       'propery-review.property-review': ProperyReviewPropertyReview;
+      'resources.resources': ResourcesResources;
+      'property.property-details': PropertyPropertyDetails;
       'pricing.amount': PricingAmount;
       'location-details.location': LocationDetailsLocation;
       'investment.investment-thesis': InvestmentInvestmentThesis;
       'investment.investment-details': InvestmentInvestmentDetails;
-      'property.property-details': PropertyPropertyDetails;
-      'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
       'amount.amount-breakage': AmountAmountBreakage;
+      'admin-use.for-admin-use-only': AdminUseForAdminUseOnly;
     }
   }
 }
